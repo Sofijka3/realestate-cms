@@ -1,5 +1,5 @@
 // ✅ ВСТАВТЕ СЮДИ ВАШ ПАРОЛЬ ЗАМІСТЬ <db_password>
-const uri = "mongodb+srv://sofiazhovnik11:sofia123@clustertodo.edvhc5c.mongodb.net/?appName=ClusterToDo"; 
+const uri = "mongodb+srv://sofiazhovnik11:sofia123@clustertodo.edvhc5c.mongodb.net/test?appName=ClusterToDo";
 
 import express from "express";
 import session from "express-session";
