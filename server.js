@@ -154,23 +154,34 @@ app.use(session({
 // --- MIDDLEWARES ---
 
 // 1. Основні дані (Мова, переклади, конфіг)
+// 1. Основні дані (Мова, переклади, конфіг)
 app.use(async (req, res, next) => {
     const lang = req.query.lang || req.cookies?.lang || req.session?.lang || "pl";
     if (req.session) req.session.lang = lang;
 
     res.locals.lang = lang;
-    res.locals.t = translations[lang] || translations.pl;
+    // Якщо файлу перекладів немає, беремо пустий об'єкт, щоб не впало
+    res.locals.t = (translations && translations[lang]) ? translations[lang] : (translations?.pl || {});
     res.locals.user = req.session.user || null;
     res.locals.requestPath = req.path;
     res.locals.query = req.query;
 
-    // Завантажуємо налаштування з бази
+    // ЗАПАСНІ ДАНІ (Щоб сайт не падав, якщо база тупить)
+    const defaultUI = {
+        labels: { city: "Miasto", type: "Typ", category: "Kategoria", rooms: "Pokoje", minPrice: "Cena od", maxPrice: "Cena do" },
+        buttons: { filter: "Filtruj", add: "Dodaj ogłoszenie" }
+    };
+    const defaultDict = { cities: [], categories: [], propertyTypes: [], rooms: [], districts: [] };
+
     try {
+        // Пробуємо взяти з бази
         const config = await Settings.findOne({ key: "main_config" });
+        
         if (config) {
-            res.locals.ui = config.ui || {};
+            // Якщо в базі є UI, беремо його, інакше - запасний
+            res.locals.ui = config.ui || defaultUI;
             
-            // 🔥 ВИМОГА ВИКЛАДАЧА: Фільтруємо словники по "enabled: true"
+            // Фільтруємо словники
             res.locals.DICT = {
                 cities: config.dictionary?.cities?.filter(c => c.enabled).map(c => c.name) || [],
                 categories: config.dictionary?.categories?.filter(c => c.enabled).map(c => c.name) || [],
@@ -179,14 +190,15 @@ app.use(async (req, res, next) => {
                 districts: config.dictionary?.districts?.filter(c => c.enabled).map(c => c.name) || []
             };
         } else {
-            // Фолбек, якщо база пуста
-            res.locals.ui = {};
-            res.locals.DICT = { cities: [], categories: [], propertyTypes: [], rooms: [], districts: [] };
+            console.log("⚠️ Config not found in DB, using defaults");
+            res.locals.ui = defaultUI;
+            res.locals.DICT = defaultDict;
         }
     } catch (e) {
-        console.error("Config load error:", e);
-        res.locals.ui = {};
-        res.locals.DICT = {};
+        console.error("❌ Config load error:", e);
+        // Якщо база впала - все одно показуємо сайт на запасних даних
+        res.locals.ui = defaultUI;
+        res.locals.DICT = defaultDict;
     }
     next();
 });
