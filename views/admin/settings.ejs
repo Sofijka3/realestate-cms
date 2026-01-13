@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Ustawienia serwisu — Panel administracyjny</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .admin-container { display: flex; }
+        aside.sidebar { width: 220px; background: #2e2e2e; color: #fff; height: 100vh; padding: 20px 10px; }
+        aside.sidebar h2 { font-size: 20px; margin-bottom: 20px; }
+        aside.sidebar ul { list-style: none; padding: 0; }
+        aside.sidebar ul li { margin-bottom: 15px; }
+        aside.sidebar ul li a { color: #ecf0f1; text-decoration: none; display: block; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
+        aside.sidebar ul li a:hover, aside.sidebar ul li.active a { background: #1e1e1e; }
+
+        main.content { flex: 1; padding: 20px; }
+        h1 { margin-bottom: 20px; }
+
+        .flex-wrapper { display: flex; gap: 20px; flex-wrap: wrap; }
+        .settings-wrapper, .dictionary-wrapper { flex: 1; min-width: 300px; }
+        .settings-form, .dictionary-card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .settings-form label, .dictionary-card label { display: block; margin-top: 10px; font-weight: 500; }
+        .settings-form input, .dictionary-card textarea { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box; }
+        .dictionary-card h3 { margin-top: 0; font-size: 18px; color: #2e2e2e; }
+        .btn { background: #4CAF50; color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: 0.2s; }
+        .btn:hover { background: #45a049; }
+        .message-box { background: #e8ffe8; border: 1px solid #5cb85c; padding: 12px 15px; border-radius: 6px; color: #2e7d32; font-weight: 600; margin-top: 10px; }
+.pages-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.admin-link {
+  display: inline-block;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border: 1px solid #dce1e6;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #2e2e2e;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.admin-link:hover {
+  background: #e9f2ff;
+  border-color: #0d6efd;
+  color: #0d6efd;
+  transform: translateX(4px);
+}
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="/admin">📊 Dashboard</a></li>
+            <li><a href="/admin/users">👤 Użytkownicy</a></li>
+            <li><a href="/admin/offers">🏠 Ogłoszenia</a></li>
+            <li class="active"><a href="/admin/settings">⚙️ Ustawienia serwisu</a></li>
+            <li><a href="/logout">🚪 Wyloguj</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+        <div class="flex-wrapper">
+
+            <!-- Налаштування сайту -->
+            <div class="settings-wrapper">
+                <h1>Ustawienia serwisu</h1>
+                <form method="POST" class="settings-form">
+                    <label>Nazwa strony:</label>
+                    <input type="text" name="siteName" value="<%= settings.siteName %>">
+
+                    <label>Kontaktowy email:</label>
+                    <input type="email" name="contactEmail" value="<%= settings.contactEmail %>">
+
+                    <label>Waluta:</label>
+                    <input type="text" name="currency" value="<%= settings.currency %>">
+
+                    <label>Maks. ogłoszeń na użytkownika:</label>
+                    <input type="number" name="maxOffersPerUser" value="<%= settings.maxOffersPerUser %>">
+
+                    <button type="submit" class="btn">💾 Zapisz</button>
+                </form>
+                <% if (typeof message !== 'undefined' && message) { %>
+                    <div class="message-box"><%= message %></div>
+                <% } %>
+
+                <h2 style="margin-top:30px;">Zarządzanie stronami</h2>
+<div class="admin-pages-links">
+  <a href="/admin/pages/home" class="admin-link">Edytuj stronę główną</a>
+  <a href="/admin/pages/about" class="admin-link"> Edytuj stronę „O nas”</a>
+  <a href="/admin/pages/contact" class="admin-link">Edytuj stronę Kontakt</a>
+</div>
+            </div>
+
+            <!-- Словник -->
+            <div class="dictionary-wrapper">
+                <h1>Słownik systemowy</h1>
+
+                <% Object.keys(dictionary).forEach(key => { %>
+                <div class="dictionary-card">
+                    <form method="POST" action="/admin/dictionary/<%= key %>">
+                        <h3><%= key.charAt(0).toUpperCase() + key.slice(1) %></h3>
+
+                        <label>
+                          <input type="checkbox" name="enabled" <%= dictionary[key].enabled ? "checked" : "" %>>
+                          Aktywny
+                        </label>
+
+                        <label>Wartości (oddzielone przecinkiem):</label>
+                        <textarea name="values" rows="3"><%= dictionary[key].values.join(", ") %></textarea>
+
+                        <button class="btn">💾 Zapisz</button>
+                    </form>
+                </div>
+                <% }) %>
+
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+</body>
+</html>

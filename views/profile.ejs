@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title><%= t.profile.profile %> | RealEstateCMS</title>
+  <link rel="stylesheet" href="/style.css">
+  
+  <style>
+    /* --- Стилі для сторінки профілю --- */
+    .form-page {
+      padding: 40px 20px;
+      min-height: 80vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Вирівнювання по верху */
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 600px; /* Трохи ширше для профілю */
+    }
+
+    .form-card {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Заголовки */
+    .form-card h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+
+    .form-card h3 {
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #555;
+      font-size: 1.5rem;
+      border-top: 1px solid #eee;
+      padding-top: 30px;
+    }
+
+    /* Поля вводу (Великі та зручні) */
+    .form-card label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+      font-size: 1.1rem;
+    }
+
+    .form-card input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1.1rem; /* Великий шрифт */
+      box-sizing: border-box;
+    }
+
+    .form-card input:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    /* Кнопки */
+    .form-card button {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      color: white;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    /* Кнопка зміни пароля (сіра) */
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
+    /* Повідомлення про успіх */
+    .msg-success {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 30px;
+      border: 1px solid #c3e6cb;
+      font-size: 1.1rem;
+    }
+
+    /* Адаптація під телефон */
+    @media (max-width: 600px) {
+      .form-card {
+        padding: 25px;
+      }
+      .form-card h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">🏠 RealEstateCMS</div>
+
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+  <div class="nav-wrapper" id="mobileMenu">
+    
+    <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
+      <a href="/change-lang/pl" class="<%= (typeof lang !== 'undefined' && lang === 'pl') ? 'active' : '' %>" style="font-weight:bold;">PL</a>
+      <a href="/change-lang/en" class="<%= (typeof lang !== 'undefined' && lang === 'en') ? 'active' : '' %>" style="font-weight:bold;">EN</a>
+      <a href="/change-lang/ua" class="<%= (typeof lang !== 'undefined' && lang === 'ua') ? 'active' : '' %>" style="font-weight:bold;">UA</a>
+    </div>
+
+    <nav>
+      <a href="/"><%= (typeof t !== 'undefined') ? t.nav.home : 'Home' %></a>
+      <a href="/offers"><%= (typeof t !== 'undefined') ? t.nav.offers : 'Offers' %></a>
+      <a href="/favorites" style="color: #e83e8c;">❤️ Ulubione</a>
+      <a href="/about"><%= (typeof t !== 'undefined') ? t.nav.about : 'About' %></a>
+      <a href="/contact"><%= (typeof t !== 'undefined') ? t.nav.contact : 'Contact' %></a>
+
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/dashboard" class="btn"><%= (typeof t !== 'undefined') ? t.nav.dashboard : 'Panel' %></a>
+        <a href="/logout" class="btn-outline"><%= (typeof t !== 'undefined') ? t.nav.logout : 'Logout' %></a>
+      <% } else { %>
+        <a href="/login" class="btn"><%= (typeof t !== 'undefined') ? t.nav.login : 'Login' %></a>
+        <% if (typeof t !== 'undefined' && t.nav.register) { %>
+           <a href="/register" class="btn-outline"><%= t.nav.register %></a>
+        <% } else { %>
+           <a href="/register" class="btn-outline">Register</a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+</script>
+
+<div class="form-page">
+  <div class="form-container">
+    <div class="form-card">
+
+      <h1><%= t.profile.profile %></h1>
+      
+      <% if (typeof message !== "undefined" && message) { %>
+        <div class="msg-success"><%= message %></div>
+      <% } %>
+
+      <form method="POST" action="/profile/update">
+        <label><%= t.profile.login %></label>
+        <input type="text" name="username" value="<%= user.username %>" required>
+
+        <label><%= t.profile.email %></label>
+        <input type="email" name="email" value="<%= user.email || '' %>">
+
+        <label><%= t.profile.phone %></label>
+        <input type="text" name="phone" value="<%= user.phone || '' %>">
+
+        <button type="submit" class="btn-primary">
+          <%= t.profile.saveChanges %>
+        </button>
+      </form>
+
+      <h3><%= t.profile.changePassword %></h3>
+
+      <form method="POST" action="/profile/password">
+        <label><%= t.profile.oldPassword %></label>
+        <input type="password" name="oldPassword" required>
+
+        <label><%= t.profile.newPassword %></label>
+        <input type="password" name="newPassword" required>
+
+        <label><%= t.profile.confirmPassword %></label>
+        <input type="password" name="confirmPassword" required>
+
+        <button type="submit" class="btn-secondary">
+          <%= t.profile.changePassword %>
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 RealEstateCMS</p>
+</footer>
+
+</body>
+</html>

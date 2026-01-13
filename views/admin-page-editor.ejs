@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Edytuj: <%= pageKey %></title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      height: 100vh;
+      overflow: hidden; /* Щоб скрол був тільки всередині панелей */
+    }
+
+    .wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100vh;
+    }
+
+    .editor {
+      padding: 30px;
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid #ddd;
+    }
+
+    .preview {
+      padding: 0; /* Прибираємо відступи, щоб Hero був на всю ширину прев'ю */
+      overflow-y: auto;
+      background: #fafafa;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .section-card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      background: #fafafa;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .remove-btn {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      margin-top: 20px;
+      background: #0d6efd;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .save-btn {
+      margin-top: 30px;
+      background: #198754;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lang-switch select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-weight: bold;
+    }
+
+    /* --- СТИЛІ ДЛЯ ПРЕВ'Ю HERO --- */
+    .hero-preview-container {
+      position: relative;
+      height: 400px; /* Трохи менше для адмінки */
+      background-color: #333;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      transition: background-image 1s ease-in-out;
+      background-image: url('/images/default-hero.jpg');
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 2;
+      padding: 20px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    
+    .hero-text p {
+      font-size: 1.1rem;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    }
+
+    /* Стиль для секцій у прев'ю */
+    #pSections {
+        padding: 20px;
+    }
+    #pSections section {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    #pSections img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <form method="POST" class="editor" enctype="multipart/form-data">
+
+    <div class="editor-header">
+      <h1>✏️ Edycja: <%= pageKey %></h1>
+
+      <div class="lang-switch">
+        <span>Język:</span>
+        <select onchange="location.href=this.value">
+          <option value="/admin/pages/<%= pageKey %>?lang=pl" <%= lang === 'pl' ? 'selected' : '' %>>PL</option>
+          <option value="/admin/pages/<%= pageKey %>?lang=en" <%= lang === 'en' ? 'selected' : '' %>>EN</option>
+          <option value="/admin/pages/<%= pageKey %>?lang=ua" <%= lang === 'ua' ? 'selected' : '' %>>UA</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Tytuł HERO</label>
+    <input name="heroTitle" value="<%= page.heroTitle %>" id="heroTitle">
+
+    <label>Opis HERO</label>
+    <textarea name="heroText" id="heroText"><%= page.heroText %></textarea>
+
+    <div style="background: #f9f9f9; padding: 15px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px;">
+      <h3 style="margin-top:0;">Zdjęcia główne (Slider)</h3>
+      
+      <% if (page.heroImages && page.heroImages.length > 0) { %>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+          <% page.heroImages.forEach(img => { %>
+            <img src="<%= img %>" style="width: 100px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
+          <% }) %>
+        </div>
+        <label style="font-weight: normal; cursor: pointer;">
+          <input type="checkbox" name="clearHeroImages"> 🗑️ Usuń obecne zdjęcia i wgraj nowe
+        </label>
+      <% } else { %>
+        <p style="color: #666; font-size: 0.9em;">Brak zdjęć w tle (używany domyślny obraz).</p>
+      <% } %>
+
+      <label style="display:block; margin-top:10px;">Dodaj nowe zdjęcia (max 5):</label>
+      <input type="file" name="heroImages" multiple accept="image/*">
+    </div>
+
+    <h2>Sekcje</h2>
+
+    <div id="sections">
+      <% (page.sections || []).forEach((s, i) => { %>
+        <div class="section-card">
+          <div class="section-header">
+            <strong>Sekcja <%= i + 1 %></strong>
+            <button type="button" class="remove-btn" onclick="removeSection(this)">Usuń</button>
+          </div>
+
+          <label>Tytuł</label>
+          <input name="sections[<%= i %>][title]" value="<%= s.title %>">
+
+          <label>Treść</label>
+          <textarea name="sections[<%= i %>][content]"><%= s.content %></textarea>
+
+          <label>URL obrazu</label>
+          <input name="sections[<%= i %>][image]" value="<%= s.image || '' %>">
+        </div>
+      <% }) %>
+    </div>
+
+    <button type="button" class="add-btn" onclick="addSection()">➕ Dodaj sekcję</button>
+    <button class="save-btn">💾 Zapisz zmiany</button>
+
+  </form>
+
+  <div class="preview">
+    
+    <div class="hero-preview-container" id="heroPreviewBox">
+        <div class="hero-overlay"></div>
+        <div class="hero-text">
+            <h1 id="pTitle"><%= page.heroTitle || "Tytuł strony" %></h1>
+            <p id="pText"><%= page.heroText || "Opis strony..." %></p>
+            <button style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px;">Przycisk</button>
+        </div>
+    </div>
+
+    <div id="pSections"></div>
+  </div>
+
+</div>
+
+<script>
+function addSection() {
+  const index = document.querySelectorAll('.section-card').length;
+
+  const html = `
+    <div class="section-card">
+      <div class="section-header">
+        <strong>Sekcja ${index + 1}</strong>
+        <button type="button" class="remove-btn" onclick="removeSection(this)">Usuń</button>
+      </div>
+
+      <label>Tytuł</label>
+      <input name="sections[${index}][title]">
+
+      <label>Treść</label>
+      <textarea name="sections[${index}][content]"></textarea>
+
+      <label>URL obrazu</label>
+      <input name="sections[${index}][image]">
+    </div>
+  `;
+  document.getElementById("sections").insertAdjacentHTML("beforeend", html);
+}
+
+function removeSection(btn) {
+  btn.closest(".section-card").remove();
+}
+</script>
+
+<script>
+function syncPreview() {
+  document.getElementById("pTitle").innerText =
+    document.getElementById("heroTitle").value || "Tytuł strony";
+
+  document.getElementById("pText").innerText =
+    document.getElementById("heroText").value || "Opis strony...";
+
+  const sections = document.querySelectorAll(".section-card");
+  const preview = document.getElementById("pSections");
+  preview.innerHTML = "";
+
+  sections.forEach(sec => {
+    const title = sec.querySelector("[name$='[title]']").value;
+    const content = sec.querySelector("[name$='[content]']").value;
+    const image = sec.querySelector("[name$='[image]']").value;
+
+    preview.innerHTML += `
+      <section>
+        <h2>${title}</h2>
+        <p>${content}</p>
+        ${image ? `<img src="${image}">` : ""}
+      </section>
+    `;
+  });
+}
+
+document.addEventListener("input", syncPreview);
+// Запускаємо один раз при завантаженні, щоб показати секції
+document.addEventListener("DOMContentLoaded", syncPreview);
+</script>
+
+<script>
+  // 🔥 ТУТ ТЕЖ БУЛА ПОМИЛКА: замінено content на page
+  const heroImages = <%- JSON.stringify(page.heroImages || []) %>;
+  
+  if (heroImages.length > 0) {
+    const heroBox = document.getElementById('heroPreviewBox');
+    let currentIndex = 0;
+
+    function changeHeroImage() {
+      heroBox.style.backgroundImage = `url('${heroImages[currentIndex]}')`;
+      currentIndex = (currentIndex + 1) % heroImages.length;
+    }
+
+    changeHeroImage(); // Показуємо перше
+
+    if (heroImages.length > 1) {
+      setInterval(changeHeroImage, 3000); // Таймер
+    }
+  }
+</script>
+
+</body>
+</html>

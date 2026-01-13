@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Użytkownicy — Panel administracyjny</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+<div class="admin-container">
+
+    <aside class="sidebar">
+        <h2>Admin Panel</h2>
+
+        <ul>
+            <li><a href="/admin">📊 Dashboard</a></li>
+            <li class="active"><a href="/admin/users">👤 Użytkownicy</a></li>
+            <li><a href="/admin/offers">🏠 Ogłoszenia</a></li>
+            <li class="active"><a href="/admin/settings">⚙️ Ustawienia serwisu</a></li>
+            <li><a href="/logout">🚪 Wyloguj</a></li>
+        </ul>
+    </aside>
+
+    <main class="content">
+        <h1>Użytkownicy</h1>
+
+        <!-- 🔍 Пошук -->
+        <form method="GET" action="/admin/users" class="search-form">
+            <input type="text" name="search" placeholder="🔍 Szukaj użytkownika..." value="<%= search %>">
+            <button type="submit" class="btn">Szukaj</button>
+        </form>
+
+        <!-- 🧑‍🤝‍🧑 Таблиця -->
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Login</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th>Rola</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <% users.forEach(u => { %>
+                <tr>
+                    <td><%= u.username %></td>
+                    <td><%= u.email || "-" %></td>
+                    <td><%= u.phone || "-" %></td>
+                    <td><%= u.role || "user" %></td>
+
+                    <td>
+                        <!-- ✏️ Редагування -->
+                        <a href="/admin/users/<%= encodeURIComponent(u.email) %>/edit" class="btn btn-edit">✏️ Edytuj</a>
+
+                        <!-- 🗑 Видалення -->
+                        <form action="/admin/users/<%= encodeURIComponent(u.email) %>/delete" 
+                              method="POST"
+                              style="display:inline-block"
+                              onsubmit="return confirm('Czy na pewno chcesz usunąć użytkownika?')">
+                            <button class="btn btn-delete">🗑 Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+
+        <!-- 📄 Пагінація -->
+        <div class="pagination">
+            <% if (page > 1) { %>
+                <a href="?page=<%= page - 1 %>&search=<%= search %>">« Poprzednia</a>
+            <% } %>
+
+            <span>Strona <%= page %> z <%= totalPages %></span>
+
+            <% if (page < totalPages) { %>
+                <a href="?page=<%= page + 1 %>&search=<%= search %>">Następna »</a>
+            <% } %>
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

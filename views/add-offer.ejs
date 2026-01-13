@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="<%= lang || 'pl' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title><%= t.addOffer.pageTitle %></title>
+  <link rel="stylesheet" href="/style.css">
+  
+  <style>
+    /* --- Стилі для форми додавання --- */
+    .form-page {
+      padding: 40px 20px;
+      min-height: 80vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background-color: #f8f9fa;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 700px; /* Ширше для зручності */
+    }
+
+    .form-card {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .form-card h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+
+    .form-card label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+      font-size: 1.1rem;
+    }
+
+    /* Великі зручні поля */
+    .form-card input[type="text"],
+    .form-card input[type="number"],
+    .form-card select,
+    .form-card textarea {
+      width: 100%;
+      padding: 15px; /* Високі поля */
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1.1rem; /* Великий шрифт */
+      box-sizing: border-box;
+      font-family: inherit;
+      background-color: #fff;
+    }
+
+    .form-card textarea {
+      resize: vertical;
+      min-height: 150px;
+    }
+
+    .form-card input:focus,
+    .form-card select:focus,
+    .form-card textarea:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0,123,255,0.2);
+    }
+
+    /* Поле завантаження файлів */
+    .form-card input[type="file"] {
+      padding: 10px;
+      background: #f1f1f1;
+      border: 1px dashed #ccc;
+      width: 100%;
+      margin-bottom: 25px;
+    }
+
+    /* Кнопка */
+    .btn-primary {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background-color: #28a745; /* Зелена кнопка для "Додати" */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: #218838;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #f5c6cb;
+      text-align: center;
+    }
+
+    /* Адаптація під мобільний */
+    @media (max-width: 600px) {
+      .form-card {
+        padding: 20px;
+      }
+      .form-card h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">🏠 RealEstateCMS</div>
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+  <div class="nav-wrapper" id="mobileMenu">
+    <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
+      <a href="/change-lang/pl" class="<%= (typeof lang !== 'undefined' && lang === 'pl') ? 'active' : '' %>" style="font-weight:bold;">PL</a>
+      <a href="/change-lang/en" class="<%= (typeof lang !== 'undefined' && lang === 'en') ? 'active' : '' %>" style="font-weight:bold;">EN</a>
+      <a href="/change-lang/ua" class="<%= (typeof lang !== 'undefined' && lang === 'ua') ? 'active' : '' %>" style="font-weight:bold;">UA</a>
+    </div>
+    <nav>
+      <a href="/"><%= (typeof t !== 'undefined') ? t.nav.home : 'Home' %></a>
+      <a href="/offers"><%= (typeof t !== 'undefined') ? t.nav.offers : 'Offers' %></a>
+      <a href="/favorites" style="color: #e83e8c;">❤️ Ulubione</a>
+      <a href="/about"><%= (typeof t !== 'undefined') ? t.nav.about : 'About' %></a>
+      <a href="/contact"><%= (typeof t !== 'undefined') ? t.nav.contact : 'Contact' %></a>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/dashboard" class="btn"><%= (typeof t !== 'undefined') ? t.nav.dashboard : 'Panel' %></a>
+        <a href="/logout" class="btn-outline"><%= (typeof t !== 'undefined') ? t.nav.logout : 'Logout' %></a>
+      <% } else { %>
+        <a href="/login" class="btn"><%= (typeof t !== 'undefined') ? t.nav.login : 'Login' %></a>
+        <% if (typeof t !== 'undefined' && t.nav.register) { %>
+           <a href="/register" class="btn-outline"><%= t.nav.register %></a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+</script>
+
+<main class="form-page">
+  <div class="form-container">
+    <div class="form-card">
+      
+      <h1><%= t.addOffer.formTitle %></h1>
+
+      <% if (typeof message !== "undefined" && message) { %>
+        <p class="error"><%= message %></p>
+      <% } %>
+
+      <form method="POST" action="/offers/add" enctype="multipart/form-data">
+
+        <label><%= t.addOffer.labels.title %></label>
+        <input type="text" name="title" required placeholder="np. Piękne mieszkanie w centrum">
+
+        <label><%= t.addOffer.labels.description %></label>
+        <textarea name="description" required placeholder="Opis nieruchomości..."></textarea>
+
+        <label><%= t.addOffer.labels.type %></label>
+        <select name="type" required>
+          <option value=""><%= t.addOffer.placeholders.selectType %></option>
+          <% dict.propertyTypes.values.forEach(v => { %>
+            <option value="<%= v %>"><%= v %></option>
+          <% }) %>
+        </select>
+
+        <label><%= t.addOffer.labels.category %></label>
+        <select name="category" required>
+          <option value=""><%= t.addOffer.placeholders.selectCategory %></option>
+          <% dict.categories.values.forEach(c => { %>
+            <option value="<%= c %>"><%= c %></option>
+          <% }) %>
+        </select>
+
+        <label><%= t.addOffer.labels.price %></label>
+        <input type="number" name="price" required placeholder="0">
+
+        <label><%= t.addOffer.labels.city %></label>
+        <select name="city" required>
+          <option value=""><%= t.addOffer.placeholders.selectCity %></option>
+          <% dict.cities.values.forEach(c => { %>
+            <option value="<%= c %>"><%= c %></option>
+          <% }) %>
+        </select>
+
+        <label><%= t.addOffer.labels.district %></label>
+        <select name="district" required>
+          <option value=""><%= t.addOffer.placeholders.selectDistrict %></option>
+          <% dict.districts.values.forEach(d => { %>
+            <option value="<%= d %>"><%= d %></option>
+          <% }) %>
+        </select>
+
+        <label><%= t.addOffer.labels.area %></label>
+        <input type="number" name="area" required placeholder="m²">
+
+        <label><%= t.addOffer.labels.rooms %></label>
+        <select name="rooms" required>
+          <option value=""><%= t.addOffer.placeholders.selectRooms %></option>
+          <% dict.rooms.values.forEach(r => { %>
+            <option value="<%= r %>"><%= r %></option>
+          <% }) %>
+        </select>
+
+        <label><%= t.addOffer.labels.images %></label>
+        <input type="file" name="images" multiple accept="image/*">
+
+        <button type="submit" class="btn-primary"><%= t.addOffer.submit %></button>
+      </form>
+
+    </div>
+  </div>
+</main>
+
+<footer><p>© 2025 RealEstateCMS</p></footer>
+
+</body>
+</html>

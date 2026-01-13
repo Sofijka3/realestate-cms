@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="<%= lang || 'pl' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Oferty | RealEstateCMS</title>
+  <link rel="stylesheet" href="/style.css">
+  
+  <style>
+    /* --- Стилі для Фільтрів --- */
+    .filter-form {
+      display: flex;
+      flex-wrap: wrap; /* Дозволяє перенос на новий рядок */
+      gap: 15px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filter-form select, 
+    .filter-form input {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      min-width: 120px;
+    }
+
+    .filter-form button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* --- МОБІЛЬНА ВЕРСІЯ ФІЛЬТРІВ --- */
+    @media (max-width: 768px) {
+      .filter-form {
+        flex-direction: column; /* Елементи стовпчиком */
+        align-items: stretch;   /* Розтягнути на всю ширину */
+        gap: 10px;
+      }
+
+      .filter-form select, 
+      .filter-form input,
+      .filter-form button {
+        width: 100%; /* На всю ширину екрану */
+        height: 45px; /* Зручна висота для пальця */
+        font-size: 16px; /* Читабельний текст */
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">🏠 RealEstateCMS</div>
+
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+  <div class="nav-wrapper" id="mobileMenu">
+    
+    <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
+      <a href="/change-lang/pl" class="<%= (typeof lang !== 'undefined' && lang === 'pl') ? 'active' : '' %>" style="font-weight:bold;">PL</a>
+      <a href="/change-lang/en" class="<%= (typeof lang !== 'undefined' && lang === 'en') ? 'active' : '' %>" style="font-weight:bold;">EN</a>
+      <a href="/change-lang/ua" class="<%= (typeof lang !== 'undefined' && lang === 'ua') ? 'active' : '' %>" style="font-weight:bold;">UA</a>
+    </div>
+
+    <nav>
+      <a href="/"><%= (typeof t !== 'undefined') ? t.nav.home : 'Home' %></a>
+      <a href="/offers"><%= (typeof t !== 'undefined') ? t.nav.offers : 'Offers' %></a>
+      <a href="/favorites" style="color: #e83e8c;">❤️ Ulubione</a>
+      <a href="/about"><%= (typeof t !== 'undefined') ? t.nav.about : 'About' %></a>
+      <a href="/contact"><%= (typeof t !== 'undefined') ? t.nav.contact : 'Contact' %></a>
+
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/dashboard" class="btn"><%= (typeof t !== 'undefined') ? t.nav.dashboard : 'Panel' %></a>
+        <a href="/logout" class="btn-outline"><%= (typeof t !== 'undefined') ? t.nav.logout : 'Logout' %></a>
+      <% } else { %>
+        <a href="/login" class="btn"><%= (typeof t !== 'undefined') ? t.nav.login : 'Login' %></a>
+        <% if (typeof t !== 'undefined' && t.nav.register) { %>
+           <a href="/register" class="btn-outline"><%= t.nav.register %></a>
+        <% } else { %>
+           <a href="/register" class="btn-outline">Register</a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+</script>
+
+<main class="offers container">
+  <h1 style="text-align: center; margin: 30px 0;"><%= t.nav.offers %></h1>
+
+  <form method="GET" action="/offers" class="filter-form">
+    <select name="city"><option value=""><%= ui.labels.city %></option><% if (DICT.cities) { %><% DICT.cities.forEach(city => { %><option value="<%= city %>" <%= req.query.city === city ? "selected" : "" %>><%= city %></option><% }) %><% } %></select>
+    <select name="type"><option value=""><%= ui.labels.type %></option><% if (DICT.propertyTypes) { %><% DICT.propertyTypes.forEach(t => { %><option value="<%= t %>" <%= req.query.type === t ? "selected" : "" %>><%= t %></option><% }) %><% } %></select>
+    <select name="category"><option value=""><%= ui.labels.category %></option><% if (DICT.categories) { %><% DICT.categories.forEach(c => { %><option value="<%= c %>" <%= req.query.category === c ? "selected" : "" %>><%= c %></option><% }) %><% } %></select>
+    <select name="rooms"><option value=""><%= ui.labels.rooms %></option><% if (DICT.rooms) { %><% DICT.rooms.forEach(r => { %><option value="<%= r %>" <%= req.query.rooms == r ? "selected" : "" %>><%= r %></option><% }) %><% } %></select>
+    <input type="number" name="minPrice" placeholder="<%= ui.labels.minPrice %>" value="<%= req.query.minPrice || '' %>">
+    <input type="number" name="maxPrice" placeholder="<%= ui.labels.maxPrice %>" value="<%= req.query.maxPrice || '' %>">
+    <button type="submit"><%= ui.buttons.filter %></button>
+    <a href="/offers" style="font-size: 0.9rem; text-decoration: underline; color: #666;">Reset</a>
+  </form>
+
+  <% if (!offers || offers.length === 0) { %>
+    <p class="subtitle" style="text-align:center;"><%= ui.labels.noOffers %></p>
+  <% } else { %>
+    <div class="offer-grid">
+      <% offers.forEach(o => { %>
+        <div class="offer-card" style="position: relative;">
+          
+          <% if (o.status === 'sold') { %>
+             <div style="position: absolute; top: 10px; left: 10px; background: #dc3545; color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; z-index: 10; font-size: 0.8rem;">SPRZEDANE</div>
+          <% } %>
+
+          <a href="#" 
+             class="fav-btn" 
+             data-id="<%= o.id %>"
+             style="position: absolute; top: 10px; right: 10px; z-index: 10; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));" 
+             title="Ulubione">
+             <%= (typeof favorites !== 'undefined' && favorites.includes(o.id)) ? '❤️' : '🤍' %>
+          </a>
+
+          <% if (o.images && o.images.length) { %>
+            <img src="<%= o.images[o.coverIndex || 0] %>" alt="">
+          <% } else { %>
+            <img src="/images/no-image.png" alt="">
+          <% } %>
+
+          <div class="offer-info">
+            <h3><%= o.title %></h3>
+            <p style="font-size: 0.9rem; color: #666;"><%= o.city %> — <%= o.area %> m², <%= o.rooms %> pokoi</p>
+            <p class="price"><%= o.price.toLocaleString('pl-PL') %> PLN</p>
+            <a href="/offers/<%= o.id %>" class="btn-small" style="text-align: center; display: block; margin-top: 10px;"><%= ui.buttons.details %></a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+</main>
+
+<footer>
+  <p>© 2025 RealEstateCMS</p>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.fav-btn');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault(); // Не перезавантажуємо сторінку
+        const id = btn.dataset.id;
+        
+        try {
+          const response = await fetch('/favorites/toggle-ajax', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+          const data = await response.json();
+          
+          if (data.success) {
+            // Міняємо іконку
+            if (data.isAdded) {
+              btn.innerHTML = '❤️';
+            } else {
+              btn.innerHTML = '🤍';
+            }
+          }
+        } catch (err) { console.error('Помилка:', err); }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

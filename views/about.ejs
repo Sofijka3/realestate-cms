@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="<%= lang || 'pl' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title><%= content.heroTitle || "O nas" %> | RealEstateCMS</title>
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    /* Стилі суто для сторінки PRO */
+    .hero {
+      /* Градієнт для цієї сторінки */
+      background: linear-gradient(135deg, #0d6efd, #4db8ff);
+      padding: 70px 20px;
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      opacity: 0.95;
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+    }
+    
+    .btn-large {
+      display: inline-block;
+      background: white;
+      color: #0d6efd;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .btn-large:hover {
+      background: #f1f1f1;
+      transform: translateY(-3px);
+    }
+
+    .static-page {
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    /* Секції з текстом і фото */
+    .content-section {
+      margin-bottom: 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Дві колонки */
+      gap: 40px;
+      align-items: center;
+    }
+
+    /* Якщо секція "full" - одна колонка */
+    .content-section.full {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .content-section h2 {
+      font-size: 28px;
+      color: #0d6efd;
+      margin-bottom: 15px;
+    }
+    
+    .content-section p {
+      font-size: 1.1rem;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .content-section img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Адаптація під телефон */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      
+      .content-section {
+        grid-template-columns: 1fr; /* Одна колонка на телефоні */
+        gap: 20px;
+        text-align: center; /* Центруємо текст */
+      }
+      
+      /* Міняємо порядок, щоб картинка була над текстом (опціонально) */
+      .content-section img {
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">🏠 RealEstateCMS</div>
+
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+  <div class="nav-wrapper" id="mobileMenu">
+    
+    <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
+      <a href="/change-lang/pl" class="<%= (typeof lang !== 'undefined' && lang === 'pl') ? 'active' : '' %>" style="font-weight:bold;">PL</a>
+      <a href="/change-lang/en" class="<%= (typeof lang !== 'undefined' && lang === 'en') ? 'active' : '' %>" style="font-weight:bold;">EN</a>
+      <a href="/change-lang/ua" class="<%= (typeof lang !== 'undefined' && lang === 'ua') ? 'active' : '' %>" style="font-weight:bold;">UA</a>
+    </div>
+
+    <nav>
+      <a href="/"><%= (typeof t !== 'undefined') ? t.nav.home : 'Home' %></a>
+      <a href="/offers"><%= (typeof t !== 'undefined') ? t.nav.offers : 'Offers' %></a>
+      <a href="/favorites" style="color: #e83e8c;">❤️ Ulubione</a>
+      <a href="/about"><%= (typeof t !== 'undefined') ? t.nav.about : 'About' %></a>
+      <a href="/contact"><%= (typeof t !== 'undefined') ? t.nav.contact : 'Contact' %></a>
+
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/dashboard" class="btn"><%= (typeof t !== 'undefined') ? t.nav.dashboard : 'Panel' %></a>
+        <a href="/logout" class="btn-outline"><%= (typeof t !== 'undefined') ? t.nav.logout : 'Logout' %></a>
+      <% } else { %>
+        <a href="/login" class="btn"><%= (typeof t !== 'undefined') ? t.nav.login : 'Login' %></a>
+        <% if (typeof t !== 'undefined' && t.nav.register) { %>
+           <a href="/register" class="btn-outline"><%= t.nav.register %></a>
+        <% } else { %>
+           <a href="/register" class="btn-outline">Register</a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+</script>
+
+<section class="hero">
+  <h1><%= content.heroTitle || "" %></h1>
+  <p><%= content.heroText || "" %></p>
+
+  <% if (content.buttons && content.buttons.contactUs) { %>
+    <a href="/contact" class="btn-large"><%= content.buttons.contactUs %></a>
+  <% } %>
+</section>
+
+<main class="static-page">
+  <% (content.sections || []).forEach(section => { %>
+    <section class="content-section <%= section.full ? "full" : "" %>">
+      
+      <div class="text-content">
+          <h2 class="section-title"><%= section.title %></h2>
+          <p><%= section.content %></p>
+      </div>
+
+      <% if (section.image) { %>
+        <div class="image-content">
+            <img src="<%= section.image %>" alt="">
+        </div>
+      <% } %>
+      
+    </section>
+  <% }) %>
+</main>
+
+<footer>
+  <p>© 2025 RealEstateCMS</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Ogłoszenia — Panel administracyjny</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+<div class="admin-container">
+
+    <aside class="sidebar">
+        <h2>Admin Panel</h2>
+
+        <ul>
+            <li><a href="/admin">📊 Dashboard</a></li>
+            <li><a href="/admin/users">👤 Użytkownicy</a></li>
+            <li class="active"><a href="/admin/offers">🏠 Ogłoszenia</a></li>
+            <li class="active"><a href="/admin/settings">⚙️ Ustawienia serwisu</a></li>
+            <li><a href="/logout">🚪 Wyloguj</a></li>
+        </ul>
+    </aside>
+
+    <main class="content">
+        <h1>Ogłoszenia</h1>
+
+        <!-- Пошук -->
+        <form method="GET" action="/admin/offers" class="search-form">
+            <input type="text" name="search" placeholder="🔍 Szukaj ogłoszenia..." value="<%= search %>">
+            <button type="submit" class="btn">Szukaj</button>
+        </form>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Tytuł</th>
+                <th>Miasto</th>
+                <th>Cena</th>
+                <th>Użytkownik</th>
+                <th>Data</th>
+                <th>Akcje</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <% offers.forEach(o => { %>
+                <tr>
+                    <td><%= o.title %></td>
+                    <td><%= o.city || "-" %></td>
+                    <td><%= o.price %> zł</td>
+                    <td><%= o.createdBy %></td>
+                    <td><%= new Date(o.createdAt).toLocaleDateString("pl-PL") %></td>
+                    <td>
+                        <a href="/admin/offers/<%= o.id %>/edit" class="btn btn-edit">✏️ Edytuj</a>
+
+                        <form action="/admin/offers/<%= o.id %>/delete" 
+                              method="POST" 
+                              style="display:inline-block"
+                              onsubmit="return confirm('Czy na pewno chcesz usunąć ogłoszenie?')">
+
+                            <button class="btn btn-delete">🗑 Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+
+        <!-- Пагінація -->
+        <div class="pagination">
+            <% if (page > 1) { %>
+                <a href="?page=<%= page - 1 %>&search=<%= search %>">« Poprzednia</a>
+            <% } %>
+
+            <span>Strona <%= page %> z <%= totalPages %></span>
+
+            <% if (page < totalPages) { %>
+                <a href="?page=<%= page + 1 %>&search=<%= search %>">Następna »</a>
+            <% } %>
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Edytuj ogłoszenie</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+<!-- SortableJS -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<!-- 📦 GALERIA + KOLEJNOŚĆ + GŁÓWNE FOTO -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const gallery = document.getElementById("photoGallery");
+  const orderInput = document.getElementById("imageOrder");
+
+  if (!gallery) return;
+
+  new Sortable(gallery, {
+    animation: 150,
+    onSort: () => {
+      const order = [...gallery.querySelectorAll(".photo-item")]
+        .map(el => el.dataset.path);
+      orderInput.value = JSON.stringify(order);
+    }
+  });
+
+  // initial order
+  const initialOrder = [...gallery.querySelectorAll(".photo-item")]
+    .map(el => el.dataset.path);
+  orderInput.value = JSON.stringify(initialOrder);
+
+  // ⭐ podświetlenie głównego zdjęcia
+  const coverIndex = <%= offer.coverIndex || 0 %>;
+  const items = gallery.querySelectorAll(".photo-item");
+  if (items[coverIndex]) {
+    items[coverIndex].classList.add("main");
+  }
+});
+</script>
+
+<!-- 📦 WALIDACJA PLIKÓW -->
+<script>
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILES = 10;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.querySelector('input[name="images"]');
+  if (!input) return;
+
+  input.addEventListener("change", () => {
+    const files = [...input.files];
+
+    if (files.length > MAX_FILES) {
+      alert("Maksymalnie 10 zdjęć");
+      input.value = "";
+      return;
+    }
+
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        alert("Dozwolone są tylko zdjęcia");
+        input.value = "";
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`Plik "${file.name}" jest za duży (max 5MB)`);
+        input.value = "";
+        return;
+      }
+    }
+  });
+});
+</script>
+
+<div class="admin-container">
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="/admin">📊 Dashboard</a></li>
+      <li><a href="/admin/users">👤 Użytkownicy</a></li>
+      <li class="active"><a href="/admin/offers">🏠 Ogłoszenia</a></li>
+      <li><a href="/admin/settings">⚙️ Ustawienia</a></li>
+      <li><a href="/logout">🚪 Wyloguj</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <h1>Edytuj ogłoszenie</h1>
+    <a href="/admin/offers" class="btn-back">🔙 Powrót</a>
+
+    <form
+      method="POST"
+      action="/admin/offers/<%= offer.id %>/edit"
+      enctype="multipart/form-data"
+      class="form-edit"
+    >
+
+      <label>Tytuł</label>
+      <input type="text" name="title" value="<%= offer.title %>" required>
+
+      <label>Opis</label>
+      <textarea name="description" required><%= offer.description %></textarea>
+
+      <label>Cena</label>
+      <input type="number" name="price" value="<%= offer.price %>" required>
+
+      <label>Miasto</label>
+      <input type="text" name="city" value="<%= offer.city || '' %>">
+
+      <label>Pokoje</label>
+      <input type="number" name="rooms" value="<%= offer.rooms || '' %>">
+
+      <label>Powierzchnia</label>
+      <input type="number" name="area" value="<%= offer.area || '' %>">
+
+      <label>Typ</label>
+      <input type="text" name="type" value="<%= offer.type || '' %>">
+
+      <h3>Zdjęcia</h3>
+      <label>Zdjęcia (przeciągnij aby zmienić kolejność):</label>
+
+      <div id="photoGallery" class="gallery">
+        <% if (offer.images && offer.images.length) { %>
+          <% offer.images.forEach(img => { %>
+            <div class="photo-item" data-path="<%= img %>">
+              <img src="<%= img %>" alt="photo">
+
+              <label class="photo-actions">
+                <input type="checkbox" name="removeImages" value="<%= img %>">
+                Usuń
+              </label>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p>Brak zdjęć</p>
+        <% } %>
+      </div>
+
+      <input type="hidden" name="imageOrder" id="imageOrder">
+
+      <label>Dodaj nowe zdjęcia:</label>
+      <input type="file" name="images" multiple accept="image/*">
+      <div id="newPhotosPreview" class="gallery"></div>
+
+      <button type="submit" class="btn btn-save">💾 Zapisz</button>
+    </form>
+  </main>
+</div>
+
+<!-- 📦 PREVIEW NOWYCH ZDJĘĆ -->
+<script>
+const fileInput = document.querySelector('input[name="images"]');
+const preview = document.getElementById("newPhotosPreview");
+
+if (fileInput && preview) {
+  fileInput.addEventListener("change", () => {
+    preview.innerHTML = "";
+    [...fileInput.files].forEach(file => {
+      if (!file.type.startsWith("image/")) return;
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.className = "preview-img";
+      preview.appendChild(img);
+    });
+  });
+}
+</script>
+
+<!-- 📦 BLOCK DOUBLE SUBMIT -->
+<script>
+const form = document.querySelector(".form-edit");
+const btn = form?.querySelector("button[type='submit']");
+
+if (form && btn) {
+  form.addEventListener("submit", () => {
+    btn.disabled = true;
+    btn.textContent = "Zapisywanie...";
+  });
+}
+</script>
+
+</body>
+</html>

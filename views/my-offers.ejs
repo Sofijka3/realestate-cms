@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="<%= lang || 'pl' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= t.myOffers.pageTitle %></title>
+  <link rel="stylesheet" href="/style.css">
+  
+  <style>
+    /* --- Стилі для сторінки Мої Оголошення --- */
+    
+    .dashboard-container {
+      display: flex;
+      gap: 30px;
+      margin: 30px auto;
+      max-width: 1200px;
+      padding: 0 20px;
+      align-items: flex-start;
+    }
+
+    /* Бічна панель (Тільки для ПК) */
+    .dashboard-sidebar {
+      flex: 0 0 250px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 90px;
+    }
+
+    .dashboard-sidebar h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .dashboard-sidebar .btn, 
+    .dashboard-sidebar .btn-primary, 
+    .dashboard-sidebar .btn-admin {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 10px;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    /* Основний контент */
+    .dashboard-content {
+      flex: 1;
+      min-width: 0;
+      /* На ПК це білий блок */
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .dashboard-content h1 {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    /* Кнопки дій в картці */
+    .offer-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .offer-actions a, 
+    .offer-actions button {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      border-radius: 6px;
+    }
+
+    /* --- КНОПКА "ДОДАТИ" ДЛЯ ТЕЛЕФОНУ --- */
+    .mobile-add-btn {
+      display: none; /* На комп'ютері її НЕМАЄ */
+    }
+
+    /* --- АДАПТАЦІЯ ПІД ТЕЛЕФОН --- */
+    @media (max-width: 768px) {
+      /* 1. ПОВНІСТЮ ХОВАЄМО БІЧНУ ПАНЕЛЬ */
+      .dashboard-sidebar {
+        display: none !important;
+      }
+
+      /* 2. Контейнер */
+      .dashboard-container {
+        display: block; 
+        padding: 0 10px;
+        margin: 20px auto;
+      }
+      
+      /* 3. Прибираємо білий фон у загального блоку, щоб картки були окремо */
+      .dashboard-content {
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+
+      .dashboard-content h1 {
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      /* 4. Стилі для мобільної кнопки "Додати" */
+      .mobile-add-btn {
+        display: block; /* Показуємо тільки тут */
+        width: 100%;
+        background-color: #28a745; /* Зелений колір */
+        color: white;
+        text-align: center;
+        padding: 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        text-decoration: none;
+        margin-bottom: 25px; /* ВІДСТУП ЗНИЗУ, щоб не злипалось */
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+      }
+      .mobile-add-btn:hover {
+        background-color: #218838;
+      }
+
+      /* Кнопки в картках стовпчиком */
+      .offer-actions {
+        flex-direction: column;
+      }
+      .offer-actions a, .offer-actions button {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+      }
+      
+      /* Сітка в одну колонку */
+      .offer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">🏠 RealEstateCMS</div>
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+  <div class="nav-wrapper" id="mobileMenu">
+    <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
+      <a href="/change-lang/pl" class="<%= (typeof lang !== 'undefined' && lang === 'pl') ? 'active' : '' %>" style="font-weight:bold;">PL</a>
+      <a href="/change-lang/en" class="<%= (typeof lang !== 'undefined' && lang === 'en') ? 'active' : '' %>" style="font-weight:bold;">EN</a>
+      <a href="/change-lang/ua" class="<%= (typeof lang !== 'undefined' && lang === 'ua') ? 'active' : '' %>" style="font-weight:bold;">UA</a>
+    </div>
+    <nav>
+      <a href="/"><%= (typeof t !== 'undefined') ? t.nav.home : 'Home' %></a>
+      <a href="/offers"><%= (typeof t !== 'undefined') ? t.nav.offers : 'Offers' %></a>
+      <a href="/favorites" style="color: #e83e8c;">❤️ Ulubione</a>
+      <a href="/about"><%= (typeof t !== 'undefined') ? t.nav.about : 'About' %></a>
+      <a href="/contact"><%= (typeof t !== 'undefined') ? t.nav.contact : 'Contact' %></a>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/dashboard" class="btn"><%= (typeof t !== 'undefined') ? t.nav.dashboard : 'Panel' %></a>
+        <a href="/logout" class="btn-outline"><%= (typeof t !== 'undefined') ? t.nav.logout : 'Logout' %></a>
+      <% } else { %>
+        <a href="/login" class="btn"><%= (typeof t !== 'undefined') ? t.nav.login : 'Login' %></a>
+        <% if (typeof t !== 'undefined' && t.nav.register) { %>
+           <a href="/register" class="btn-outline"><%= t.nav.register %></a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+</script>
+
+<main class="dashboard">
+  <div class="dashboard-container">
+
+    <aside class="dashboard-sidebar">
+        <h2><%= t.dashboard.title %></h2>
+        <a href="/offers/add" class="btn btn-primary"><%= t.dashboard.addOffer %></a>
+        <a href="/my-offers" class="btn" style="background-color: #e9ecef;"><%= t.dashboard.myOffers %></a>
+        <a href="/profile" class="btn"><%= t.dashboard.profile %></a>
+        <% if (user && user.role === "admin") { %>
+          <a href="/admin" class="btn btn-admin"><%= t.dashboard.adminPanel %></a>
+        <% } %>
+    </aside>
+
+    <section class="dashboard-content">
+      
+      <h1><%= t.myOffers.title %></h1>
+
+      <a href="/offers/add" class="mobile-add-btn">
+         + <%= t.dashboard.addOffer %>
+      </a>
+
+      <% if (!offers || offers.length === 0) { %>
+        <div style="text-align: center; padding: 40px; background: white; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <p class="subtitle" style="font-size: 1.1rem; color: #666; margin-bottom: 20px;"><%= t.myOffers.emptyState %></p>
+            <a href="/offers/add" class="btn btn-primary" style="display: inline-block; width: auto;">Dodaj pierwsze ogłoszenie</a>
+        </div>
+      <% } else { %>
+        <div class="offer-grid">
+          <% offers.forEach(o => { %>
+            <div class="offer-card" style="position: relative;">
+              
+              <% if (o.status === 'sold') { %>
+                 <div style="position: absolute; top: 10px; left: 10px; background: #dc3545; color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; z-index: 10; font-size: 0.8rem;">SPRZEDANE</div>
+              <% } else if (o.status === 'reserved') { %>
+                 <div style="position: absolute; top: 10px; left: 10px; background: #ffc107; color: black; padding: 5px 10px; border-radius: 4px; font-weight: bold; z-index: 10; font-size: 0.8rem;">REZERWACJA</div>
+              <% } %>
+
+              <% if (o.images && o.images.length) { %>
+                <img src="<%= o.images[o.coverIndex || 0] %>" alt="photo">
+              <% } else { %>
+                <img src="/images/no-image.png" alt="no photo">
+              <% } %>
+
+              <div class="offer-info">
+                <h3><%= o.title %></h3>
+                <p style="color:#666; font-size:0.9rem;"><%= o.city %>, <%= o.district || "-" %> — <%= o.area %> m²</p>
+                <p class="price"><%= o.price.toLocaleString("pl-PL") %> PLN</p>
+
+                <div class="offer-actions">
+                  <a href="/offers/<%= o.id %>" class="btn-small" style="background:#17a2b8; color:white;"><%= t.myOffers.card.view %></a>
+                  <a href="/offers/edit/<%= o.id %>" class="btn-small" style="background:#ffc107; color:black;"><%= t.myOffers.card.edit %></a>
+                  
+                  <form method="POST" action="/offers/delete/<%= o.id %>" style="flex:1; margin:0;">
+                    <button class="btn-small" style="background:#dc3545; color:white; width:100%; border:none;" onclick="return confirm('<%= t.myOffers.card.confirmDelete %>')">
+                      <%= t.myOffers.card.delete %>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
+  </div>
+</main>
+
+<footer><p>© 2025 RealEstateCMS</p></footer>
+</body>
+</html>

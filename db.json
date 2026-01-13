@@ -1,0 +1,847 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "passwordHash": "admin123",
+      "role": "admin",
+      "email": "admin@example.com",
+      "emailVerified": true
+    },
+    {
+      "username": "testuser",
+      "passwordHash": "$2b$10$OD/ZEnysLjrquOQlkxB7AeEteATSggO10.T1YBIAnUGU2NnuERUgC",
+      "email": "sofiazhovnik11@gmail.com",
+      "phone": "+48889552177",
+      "resetToken": null,
+      "resetTokenExpires": null,
+      "favorites": [
+        "ZZuXnHl6p5WMemuKrEtHG",
+        "Ki8PFjUZ7d7qHRTksZfpR"
+      ]
+    },
+    {
+      "username": "testuser2",
+      "passwordHash": "$2b$10$zs21MV6z9dCbGjzEjwm2G.SRzs7yqjl17XY8wWwJTxC9qzg/gPn7m",
+      "email": "zzs925482@gmail.com",
+      "phone": "+48888552222"
+    },
+    {
+      "username": "testuser3",
+      "passwordHash": "$2b$10$CdMmJN9Jxyh5Kq5X1mN8WOBcxINatgcb5rgiNVx52rW45YjHIsJWu",
+      "email": "sofiia.zhovnik@student.put.poznan.pl",
+      "phone": "+48888552122",
+      "resetToken": "f9b11d1540525b96278351bdc9e0ca9eccf8b327d825ac0df96c49f613b8eb70",
+      "resetTokenExpires": 1768150984940
+    },
+    {
+      "username": "anna",
+      "passwordHash": "$2b$10$3ABhr5bXQMNe9bZkaFYRku1e8Yo9VYUq7tO6gdB/RF0svpuBVdOyu",
+      "email": "anna@gmail.com",
+      "phone": "+48888888888",
+      "emailVerified": false,
+      "verificationToken": "e02589ab04092deff5b20a69284d4918083fa0c97a148fdbd9feb65f3069e053"
+    },
+    {
+      "username": "testuser4",
+      "passwordHash": "$2b$10$LXp05a2JTcdfZqIgJKoeTORMXqBXS33ZqpQm98AXuFAkcHe4bf35y",
+      "email": "testuser4@gmail.com",
+      "phone": "+48778852121",
+      "emailVerified": false,
+      "verificationToken": "a6bbd704b9b7471b3e03266c04ea16b154be1ee09c0254712854765c4025026c",
+      "role": "user"
+    }
+  ],
+  "offers": [
+    {
+      "id": "1763454662907",
+      "title": "Przytulne mieszkanie w centrum!!",
+      "description": "Nowoczesne 3-pokojowe mieszkanie w samym sercu miasta, blisko komunikacji i sklepów.",
+      "price": 45000,
+      "location": "Warszawa, Śródmieście",
+      "area": 55,
+      "rooms": 1,
+      "image": "https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg",
+      "createdBy": "testuser",
+      "createdAt": "2025-11-18T08:31:02.907Z",
+      "city": "Warszawa",
+      "type": "Mieszkanie",
+      "updatedAt": "2025-12-11T13:09:51.110Z",
+      "district": "Mokotów",
+      "category": "sprzedaż",
+      "images": [
+        "/uploads/1767779917555-536361408.jfif",
+        "/uploads/1767784116273-645090734.jpg"
+      ],
+      "coverIndex": 0
+    },
+    {
+      "id": "1763456630119",
+      "title": "Nowoczesny apartament z widokiem na park",
+      "description": "Elegancki 2-pokojowy apartament z balkonem, w spokojnej dzielnicy, blisko terenów zielonych i sklepów.",
+      "price": 52000,
+      "location": "Kraków, Zwierzyniec",
+      "area": 60,
+      "rooms": 2,
+      "image": "https://images.pexels.com/photos/259950/pexels-photo-259950.jpeg",
+      "createdBy": "testuser2",
+      "createdAt": "2025-11-18T09:03:50.128Z",
+      "city": "",
+      "type": "",
+      "status": "active"
+    },
+    {
+      "id": "1763456684808",
+      "title": "Przestronne mieszkanie dla rodziny",
+      "description": "4-pokojowe mieszkanie z dużym salonem i oddzielną kuchnią, idealne dla rodziny, w pobliżu szkoły i komunikacji miejskiej.",
+      "price": 680000,
+      "location": "Gdańsk, Oliwa",
+      "area": 85,
+      "rooms": 4,
+      "image": "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg",
+      "createdBy": "testuser2",
+      "createdAt": "2025-11-18T09:04:44.808Z",
+      "images": [
+        "/uploads/1767779925971-397805323.jpg"
+      ],
+      "coverIndex": 0,
+      "city": "",
+      "type": "",
+      "status": "active"
+    },
+    {
+      "id": "1763457798061",
+      "title": "Opis`1",
+      "description": "O",
+      "price": 56000,
+      "location": "Warszawa, Śródmieście",
+      "area": 45,
+      "rooms": 5,
+      "image": "https://images.pexels.com/photos/259950/pexels-photo-259950.jpeg",
+      "createdBy": "testuser",
+      "createdAt": "2025-11-18T09:23:18.061Z",
+      "city": "Poznan",
+      "type": "",
+      "updatedAt": "2025-12-09T12:42:21.338Z",
+      "images": [
+        "/uploads/resized-1768222555833-326192914.jpg"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "CkjktQsoOxnebMWSuWkBr",
+      "title": "Mieszkanie",
+      "description": "Opis",
+      "price": 100000,
+      "area": 100,
+      "rooms": 10,
+      "image": "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg",
+      "type": "Dom",
+      "createdBy": "testuser3",
+      "createdAt": "2025-11-30T21:45:28.392Z",
+      "updatedAt": "2025-11-30T21:49:32.761Z",
+      "images": [
+        "/uploads/resized-1768222571215-392503190.jfif"
+      ],
+      "city": "",
+      "status": "active"
+    },
+    {
+      "id": "3q6MiZxiUWCMkKpWELMhm",
+      "title": "Super",
+      "description": "S",
+      "price": 50,
+      "city": "Kraków",
+      "district": "Stare Miasto",
+      "rooms": 1,
+      "area": 50,
+      "type": "Dom",
+      "image": "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg",
+      "createdBy": "testuser",
+      "createdAt": "2025-12-01T15:37:38.935Z"
+    },
+    {
+      "id": "sdsfGE0jcXS2Hb8ob_TN4",
+      "title": "Mieszkanie",
+      "description": "Opis!",
+      "price": 450000,
+      "city": "Gdańsk",
+      "district": "Letnica",
+      "rooms": 1,
+      "area": 80,
+      "type": "Mieszkanie",
+      "image": "https://bunny-wp-pullzone-vjw3hvlu2l.b-cdn.net/wp-content/uploads/2023/06/89132212_1_Easy-Resize.com_.jpg",
+      "createdBy": "testuser",
+      "createdAt": "2025-12-01T15:50:04.532Z"
+    },
+    {
+      "id": "A1JbIy69tdSDRlE94pSxV",
+      "title": "Mieszkanie2",
+      "description": "Oooooooooopis",
+      "price": 10000000,
+      "city": "Kraków",
+      "district": "Podgórze",
+      "rooms": 4,
+      "area": 180,
+      "type": "Dom",
+      "category": "sprzedaż",
+      "image": "https://projekty.wbudowie.pl/media/cache/resolve/optimize2/files/2489583_Gotowy_projekt_domu_w_stylu_nowoczesnej_stodoly_Modern_House_NewHouse_706_2_projekt_duzego_domu_w_stylu_stodola-scaled.jpeg",
+      "createdBy": "testuser",
+      "createdAt": "2025-12-01T16:57:46.303Z",
+      "updatedAt": "2025-12-11T13:10:45.179Z"
+    },
+    {
+      "id": "0Hiqo4ajGsgb-cCe2hBsG",
+      "title": "1111",
+      "description": "1!",
+      "price": 56000,
+      "city": "Gdańsk",
+      "district": "Oliwa",
+      "rooms": 2,
+      "area": 65,
+      "type": "Dom",
+      "category": "sprzedaż",
+      "image": "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg",
+      "createdBy": "testuser3",
+      "createdAt": "2025-12-09T08:47:16.812Z",
+      "updatedAt": "2025-12-09T09:47:54.234Z"
+    },
+    {
+      "id": "SSiMvpNIl9WAWSJgcWT1G",
+      "title": "Miesz",
+      "description": "Mmmm",
+      "price": 50,
+      "city": "Warszawa",
+      "district": "Praga Południe",
+      "rooms": 1,
+      "area": 580,
+      "type": "Działka",
+      "category": "House",
+      "image": "https://www.bing.com/images/search?view=detailV2&ccid=55B4m8Es&id=A548C9125C20211D108CAB10B5ADE5EB3382FF12&thid=OIP.55B4m8EsdgQv76qj6gRa_QHaE8&mediaurl=https%3a%2f%2fmodernhouse-projekty.pl%2fwp-content%2fuploads%2f2023%2f06%2f01_Gotowy_projekt_domu_w_stylu_nowoczesnej_stodoly_New_House_759_Modern_house.webp&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.e790789bc12c76042fefaaa3ea045afd%3frik%3dEv%252bCM%252bvlrbUQqw%26pid%3dImgRaw%26r%3d0&exph=2000&expw=3000&q=Dom+Projekty&FORM=IRPRST&ck=B14AB65E1A83E5123E6D52332AD52C42&selectedIndex=7&itb=0",
+      "createdBy": "admin",
+      "createdAt": "2025-12-16T08:55:57.806Z"
+    },
+    {
+      "id": "uv0ukm8Z29uzlAZTbsowd",
+      "title": "M",
+      "description": ",",
+      "price": 78,
+      "city": "Warszawa",
+      "district": "Mokotów",
+      "rooms": 1,
+      "area": 4,
+      "type": "Mieszkanie",
+      "category": "Apartment",
+      "image": "https://bunny-wp-pullzone-vjw3hvlu2l.b-cdn.net/wp-content/uploads/2023/06/89132212_1_Easy-Resize.com_.jpg",
+      "createdBy": "admin",
+      "createdAt": "2025-12-16T09:17:43.390Z"
+    },
+    {
+      "id": "0q9J18xZikPhEyZq2QrGc",
+      "title": "mm",
+      "description": "mm",
+      "price": 8,
+      "city": "Kraków",
+      "district": "Mokotów",
+      "rooms": 6,
+      "area": 96,
+      "type": "Mieszkanie",
+      "category": "Apartment",
+      "image": "https://bunny-wp-pullzone-vjw3hvlu2l.b-cdn.net/wp-content/uploads/2023/06/89132212_1_Easy-Resize.com_.jpg",
+      "createdBy": "admin",
+      "createdAt": "2025-12-16T09:30:44.198Z"
+    },
+    {
+      "id": "i16l5cDQjr8Ab5_2o2FSd",
+      "title": "mm",
+      "description": "mmmm",
+      "price": 78,
+      "city": "Warszawa",
+      "district": "Mokotów",
+      "rooms": 5,
+      "area": 25,
+      "type": "Mieszkanie",
+      "category": "Apartment",
+      "image": "https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg",
+      "createdBy": "admin",
+      "createdAt": "2025-12-16T09:46:43.017Z"
+    },
+    {
+      "id": "Ki8PFjUZ7d7qHRTksZfpR",
+      "title": "mm",
+      "description": "mm",
+      "price": 56,
+      "city": "Kraków",
+      "district": "Śródmieście",
+      "rooms": 5,
+      "area": 56,
+      "type": "Dom",
+      "category": "House",
+      "image": "https://bunny-wp-pullzone-vjw3hvlu2l.b-cdn.net/wp-content/uploads/2023/06/89132212_1_Easy-Resize.com_.jpg",
+      "createdBy": "admin",
+      "createdAt": "2025-12-16T09:59:08.527Z"
+    },
+    {
+      "id": "vEXZQBhkPyRJABpJJ3On-",
+      "title": "M",
+      "description": "mm",
+      "price": 45,
+      "city": "Warszawa",
+      "district": "Mokotów",
+      "rooms": 3,
+      "area": 5,
+      "type": "Mieszkanie",
+      "category": "House",
+      "image": "https://images.pexels.com/photos/259950/pexels-photo-259950.jpeg",
+      "createdBy": "testuser",
+      "createdAt": "2025-12-16T10:07:26.715Z"
+    },
+    {
+      "id": "vF2e2YXCS8ioRgImX5AwK",
+      "title": "m",
+      "description": "n",
+      "price": 5,
+      "city": "Kraków",
+      "district": "Mokotów",
+      "rooms": 4,
+      "area": 5,
+      "type": "Pokój",
+      "category": "House",
+      "image": "https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg",
+      "createdBy": "testuser",
+      "createdAt": "2025-12-26T13:30:51.904Z"
+    },
+    {
+      "id": "Kg8UVU0KBZLEdxSAXmCQP",
+      "title": "11",
+      "description": "11345",
+      "price": 12,
+      "city": "Kraków",
+      "district": "Praga Południe",
+      "area": 12,
+      "rooms": 1,
+      "type": "Dom",
+      "category": "Sprzedaż",
+      "images": [
+        "/uploads/1767388201747-142756548.jfif",
+        "/uploads/1767443910351-248814467.jpg",
+        "/uploads/1767388201742-139652333.jpg"
+      ],
+      "createdAt": "2026-01-02T21:10:01.754Z",
+      "user": "sofiazhovnik11@gmail.com",
+      "coverIndex": 1,
+      "status": "sold"
+    },
+    {
+      "id": "30EFXd-Ca65N_EAnmoSwl",
+      "title": "@345",
+      "description": "Nsmssmms",
+      "price": 8999,
+      "city": "Kraków",
+      "district": "Praga Południe",
+      "area": 89,
+      "rooms": 5,
+      "type": "Pokój",
+      "category": "House",
+      "images": [
+        "/uploads/1767964870322-62032136.jpg"
+      ],
+      "coverIndex": 0,
+      "createdAt": "2026-01-09T13:21:10.337Z",
+      "user": "sofiazhovnik11@gmail.com"
+    },
+    {
+      "id": "ZZuXnHl6p5WMemuKrEtHG",
+      "title": "\"34565",
+      "description": "3467",
+      "price": 12,
+      "city": "Kraków",
+      "district": "Mokotów",
+      "area": 23,
+      "rooms": 2,
+      "type": "Dom",
+      "category": "House",
+      "images": [
+        "/uploads/1768147876650-864222925.jpg"
+      ],
+      "coverIndex": 0,
+      "createdAt": "2026-01-11T16:11:16.686Z",
+      "user": "sofiazhovnik11@gmail.com"
+    },
+    {
+      "id": "q7KDPzjrNanHqHLX8jyKA",
+      "title": "^^",
+      "description": "qwergf",
+      "price": 230000,
+      "city": "Kraków",
+      "district": "Mokotów",
+      "area": 12,
+      "rooms": 3,
+      "type": "Dom",
+      "category": "Sprzedaż",
+      "images": [
+        "/uploads/1768222700643-920693262.jpg"
+      ],
+      "coverIndex": 0,
+      "status": "sold",
+      "createdAt": "2026-01-12T12:58:20.653Z",
+      "user": "admin@example.com"
+    },
+    {
+      "id": "Joo_RVO8gjyDrWKGTSmOo",
+      "title": "00000000",
+      "description": "11",
+      "price": 56,
+      "city": "Warszawa",
+      "district": "Śródmieście",
+      "area": 89,
+      "rooms": 3,
+      "type": "Dom",
+      "category": "Apartment",
+      "images": [
+        "/uploads/1768233641164-260362393.jpg"
+      ],
+      "coverIndex": 0,
+      "status": "active",
+      "createdAt": "2026-01-12T16:00:41.193Z",
+      "user": "sofiazhovnik11@gmail.com"
+    },
+    {
+      "id": "f43wQZ3gvM5nVCLSeJrcd",
+      "title": "Wooow",
+      "description": "!!",
+      "price": 1234557,
+      "city": "Poznań",
+      "district": "Śródmieście",
+      "area": 34,
+      "rooms": 4,
+      "type": "Dom",
+      "category": "House",
+      "images": [
+        "/uploads/1768289671708-593629492.jpg"
+      ],
+      "coverIndex": 0,
+      "status": "active",
+      "createdAt": "2026-01-13T07:34:31.722Z",
+      "user": "sofiazhovnik11@gmail.com"
+    },
+    {
+      "id": "cEZVEdIAAh97ONVsqhkoO",
+      "title": "Mieszkanie",
+      "description": "Super",
+      "price": 23,
+      "city": "Kraków",
+      "district": "Mokotów",
+      "area": 90,
+      "rooms": 4,
+      "type": "Mieszkanie",
+      "category": "Apartment",
+      "images": [
+        "/uploads/1768289768404-997190508.jpg"
+      ],
+      "coverIndex": 0,
+      "status": "active",
+      "createdAt": "2026-01-13T07:36:08.411Z",
+      "user": "admin@example.com"
+    }
+  ],
+  "dictionary": {
+    "cities": {
+      "enabled": true,
+      "allowCustom": false,
+      "values": [
+        "Warszawa",
+        "Kraków",
+        "Wrocław",
+        "Poznań",
+        "Gdańsk",
+        "i"
+      ]
+    },
+    "propertyTypes": {
+      "enabled": true,
+      "allowCustom": false,
+      "values": [
+        "Mieszkanie",
+        "Dom",
+        "Pokój",
+        "Działka"
+      ]
+    },
+    "rooms": {
+      "enabled": true,
+      "allowCustom": false,
+      "values": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10+"
+      ]
+    },
+    "categories": {
+      "enabled": true,
+      "allowCustom": false,
+      "values": [
+        "Apartment",
+        "House",
+        "Studio"
+      ]
+    },
+    "districts": {
+      "enabled": true,
+      "allowCustom": false,
+      "values": [
+        "Śródmieście",
+        "Mokotów",
+        "Praga Południe",
+        "Wola"
+      ]
+    }
+  },
+  "settings": {
+    "siteName": "RealEstateCMS",
+    "contactEmail": "sofiazhovnik11@gmail.com",
+    "currency": "PLN",
+    "maxOffersPerUser": 10
+  },
+  "logs": [
+    {
+      "action": "add offer 0Hiqo4ajGsgb-cCe2hBsG",
+      "user": "sofiia.zhovnik@student.put.poznan.pl",
+      "time": "2025-12-09T08:47:16.835Z"
+    },
+    {
+      "action": "add offer 5_qlSw68ov211x35FJjBH",
+      "user": "sofiia.zhovnik@student.put.poznan.pl",
+      "time": "2025-12-09T08:47:53.407Z"
+    },
+    {
+      "action": "edit offer 0Hiqo4ajGsgb-cCe2hBsG",
+      "user": "sofiia.zhovnik@student.put.poznan.pl",
+      "time": "2025-12-09T09:47:54.245Z"
+    },
+    {
+      "action": "delete offer 5_qlSw68ov211x35FJjBH",
+      "user": "sofiia.zhovnik@student.put.poznan.pl",
+      "time": "2025-12-09T09:48:05.932Z"
+    },
+    {
+      "action": "edit offer 1763454662907",
+      "user": "admin@example.com",
+      "time": "2025-12-09T11:44:26.059Z"
+    },
+    {
+      "action": "edit user sofiazhovnik11@gmail.com",
+      "user": "admin@example.com",
+      "time": "2025-12-09T12:38:12.716Z"
+    },
+    {
+      "action": "edit offer 1763457798061",
+      "user": "admin@example.com",
+      "time": "2025-12-09T12:42:21.342Z"
+    },
+    {
+      "action": "add offer RB_ojgTaCsbToI9WJr-3L",
+      "user": "test@gmail.com",
+      "time": "2025-12-09T13:07:28.063Z"
+    },
+    {
+      "action": "delete user test@gmail.com with 1 offers",
+      "user": "admin@example.com",
+      "time": "2025-12-09T13:10:15.098Z"
+    },
+    {
+      "action": "edit offer 1763454662907",
+      "user": "sofiazhovnik11@gmail.com",
+      "time": "2025-12-11T13:09:51.129Z"
+    },
+    {
+      "action": "edit offer A1JbIy69tdSDRlE94pSxV",
+      "user": "sofiazhovnik11@gmail.com",
+      "time": "2025-12-11T13:10:45.201Z"
+    },
+    {
+      "action": "add offer SSiMvpNIl9WAWSJgcWT1G",
+      "user": "admin@example.com",
+      "time": "2025-12-16T08:55:57.821Z"
+    },
+    {
+      "action": "add offer uv0ukm8Z29uzlAZTbsowd",
+      "user": "admin@example.com",
+      "time": "2025-12-16T09:17:43.421Z"
+    },
+    {
+      "action": "add offer 0q9J18xZikPhEyZq2QrGc",
+      "user": "admin@example.com",
+      "time": "2025-12-16T09:30:44.216Z"
+    },
+    {
+      "action": "add offer i16l5cDQjr8Ab5_2o2FSd",
+      "user": "admin@example.com",
+      "time": "2025-12-16T09:46:43.028Z"
+    },
+    {
+      "action": "add offer Ki8PFjUZ7d7qHRTksZfpR",
+      "user": "admin@example.com",
+      "time": "2025-12-16T09:59:08.534Z"
+    },
+    {
+      "action": "add offer vEXZQBhkPyRJABpJJ3On-",
+      "user": "sofiazhovnik11@gmail.com",
+      "time": "2025-12-16T10:07:26.727Z"
+    },
+    {
+      "action": "add offer vF2e2YXCS8ioRgImX5AwK",
+      "user": "sofiazhovnik11@gmail.com",
+      "time": "2025-12-26T13:30:51.907Z"
+    },
+    {
+      "action": "delete offer 4mg6GIDGz0nQ4H6vPFlvg",
+      "user": "sofiazhovnik11@gmail.com",
+      "time": "2026-01-02T21:09:31.062Z"
+    },
+    {
+      "action": "edit user sofiazhovnik11@gmail.com",
+      "user": "admin@example.com",
+      "time": "2026-01-07T09:09:23.031Z"
+    },
+    {
+      "action": "edit user sofiazhovnik11@gmail.com",
+      "user": "admin@example.com",
+      "time": "2026-01-07T09:09:28.384Z"
+    },
+    {
+      "action": "add",
+      "user": "sofiazhovnik11@gmail.com",
+      "time": "2026-01-13T07:34:31.726Z"
+    },
+    {
+      "action": "add",
+      "user": "admin@example.com",
+      "time": "2026-01-13T07:36:08.416Z"
+    },
+    {
+      "action": "edit",
+      "user": "admin@example.com",
+      "time": "2026-01-13T07:36:36.959Z"
+    },
+    {
+      "action": "add",
+      "user": "admin@example.com",
+      "time": "2026-01-13T07:37:05.978Z"
+    },
+    {
+      "action": "delete",
+      "user": "admin@example.com",
+      "time": "2026-01-13T07:37:14.365Z"
+    }
+  ],
+  "pages": {
+    "home": {
+      "pl": {
+        "heroTitle": "Znajdź swoje wymarzone mieszkanie!!",
+        "heroText": "",
+        "sections": [],
+        "heroImages": [
+          "/uploads/1768155032292-25872540.jpg",
+          "/uploads/1768155032300-341572838.jpg",
+          "/uploads/1768155032310-525823813.jfif"
+        ]
+      },
+      "en": {
+        "heroTitle": "Find your dream apartment!",
+        "heroText": "Real estate sales and rentals",
+        "sections": [],
+        "heroImages": [
+          "/uploads/1768155040806-316833675.jpg",
+          "/uploads/1768155040812-246658553.jpg",
+          "/uploads/1768155040818-27842928.jfif"
+        ]
+      },
+      "ua": {
+        "heroTitle": "Знайдіть квартиру своєї мрії!",
+        "heroText": "Продаж та оренда нерухомості",
+        "sections": [],
+        "heroImages": [
+          "/uploads/1768155048532-16612439.jpg",
+          "/uploads/1768155048536-658638915.jpg",
+          "/uploads/1768155048547-102465953.jfif"
+        ]
+      }
+    },
+    "about": {
+      "pl": {
+        "heroTitle": "Kim jesteśmy?!",
+        "heroText": "Tworzymy nowoczesny system ogłoszeń",
+        "sections": [
+          {
+            "title": "Nasza platforma",
+            "content": "RealEstateCMS to intuicyjny system...",
+            "image": "/images/about1.jpg"
+          }
+        ],
+        "heroImages": []
+      },
+      "en": {
+        "heroTitle": "Who are we?",
+        "heroText": "We are creating a modern advertising system",
+        "sections": [
+          {
+            "title": "Our platform",
+            "content": "RealEstateCMS is an intuitive system...",
+            "image": "/images/about1.jpg"
+          }
+        ]
+      },
+      "ua": {
+        "heroTitle": "Хто ми?",
+        "heroText": "Створюємо сучасну систему оголошень",
+        "sections": [
+          {
+            "title": "Наша платформа",
+            "content": "RealEstateCMS — це інтуїтивно зрозуміла система...",
+            "image": "/images/about1.jpg"
+          }
+        ]
+      }
+    },
+    "contact": {
+      "pl": {
+        "heroTitle": "Kontakt",
+        "heroText": "Skontaktuj się z nami",
+        "sections": []
+      },
+      "en": {
+        "heroTitle": "Contact",
+        "heroText": "Contact us",
+        "sections": []
+      },
+      "ua": {
+        "heroTitle": "Контакт",
+        "heroText": "Напиши нам!",
+        "sections": []
+      }
+    }
+  },
+  "ui": {
+    "pl": {
+      "menu": {
+        "home": "Home",
+        "offers": "Oferty",
+        "about": "O nas",
+        "contact": "Kontakt"
+      },
+      "buttons": {
+        "browseOffers": "Przeglądaj oferty",
+        "login": "Zaloguj",
+        "register": "Rejestracja",
+        "dashboard": "Panel",
+        "logout": "Wyloguj",
+        "filter": "Filtruj",
+        "details": "Zobacz szczegóły"
+      },
+      "labels": {
+        "city": "Miasto (wszystkie)",
+        "district": "Dzielnica (wszystkie)",
+        "type": "Typ nieruchomości",
+        "category": "Kategoria",
+        "rooms": "Liczba pokoi",
+        "minPrice": "Min cena",
+        "maxPrice": "Max cena",
+        "minArea": "Min metraż",
+        "maxArea": "Max metraż",
+        "sort": "Sortowanie",
+        "priceAsc": "Cena: od najniższej",
+        "priceDesc": "Cena: od najwyższej",
+        "dateNew": "Najnowsze",
+        "dateOld": "Najstarsze",
+        "noOffers": "Brak ogłoszeń spełniających kryteria",
+        "name": "Imię",
+        "email": "Email",
+        "message": "Wiadomość",
+        "location": "Nasza lokalizacja"
+      }
+    },
+    "en": {
+      "menu": {
+        "home": "Home",
+        "offers": "Offers",
+        "about": "About",
+        "contact": "Contact"
+      },
+      "buttons": {
+        "browseOffers": "Browse offers",
+        "login": "Log in",
+        "register": "Registration",
+        "dashboard": "Panel",
+        "logout": "Log out",
+        "filter": "Filter",
+        "details": "View details"
+      },
+      "labels": {
+        "city": "City (all)",
+        "district": "District (all)",
+        "type": "Property type",
+        "category": "Category",
+        "rooms": "Rooms",
+        "minPrice": "Min price",
+        "maxPrice": "Max price",
+        "minArea": "Min area",
+        "maxArea": "Max area",
+        "sort": "Sort",
+        "priceAsc": "Price: low to high",
+        "priceDesc": "Price: high to low",
+        "dateNew": "Newest",
+        "dateOld": "Oldest",
+        "noOffers": "No offers matching the criteria",
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "location": "Our location"
+      }
+    },
+    "ua": {
+      "menu": {
+        "home": "Головна",
+        "offers": "Оголошення",
+        "about": "Про нас",
+        "contact": "Контакти"
+      },
+      "buttons": {
+        "browseOffers": "Переглянути оферти",
+        "login": "Логування",
+        "register": "Реєстрація",
+        "dashboard": "Панель",
+        "logout": "Вийди",
+        "filter": "Фільтрувати",
+        "details": "Датальніше"
+      },
+      "labels": {
+        "city": "Місто (усі)",
+        "district": "Район (усі)",
+        "type": "Тип нерухомості",
+        "category": "Категорія",
+        "rooms": "Кількість кімнат",
+        "minPrice": "Мін. ціна",
+        "maxPrice": "Макс. ціна",
+        "minArea": "Мін. площа",
+        "maxArea": "Макс. площа",
+        "sort": "Сортування",
+        "priceAsc": "Ціна: від низької",
+        "priceDesc": "Ціна: від високої",
+        "dateNew": "Нові",
+        "dateOld": "Старі",
+        "noOffers": "Немає оголошень за критеріями",
+        "name": "Імʼя",
+        "email": "Email",
+        "message": "Повідомлення",
+        "location": "Наша локація"
+      }
+    }
+  }
+}

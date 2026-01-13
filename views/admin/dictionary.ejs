@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Słownik systemowy — Panel administracyjny</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+    .admin-container { display: flex; }
+    aside.sidebar { width: 220px; background: #2e2e2e; color: #fff; height: 100vh; padding: 20px 10px; }
+    aside.sidebar h2 { font-size: 20px; margin-bottom: 20px; }
+    aside.sidebar ul { list-style: none; padding: 0; }
+    aside.sidebar ul li { margin-bottom: 15px; }
+    aside.sidebar ul li a { color: #ecf0f1; text-decoration: none; display: block; padding: 8px 12px; border-radius: 6px; transition: 0.2s; }
+    aside.sidebar ul li a:hover, aside.sidebar ul li.active a { background: #1e1e1e; }
+    main.content { flex: 1; padding: 20px; }
+    .dictionary-card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .dictionary-card label { display: block; margin-top: 10px; font-weight: 500; }
+    .dictionary-card input, .dictionary-card textarea { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box; }
+    .btn { background: #4CAF50; color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: 0.2s; }
+    .btn:hover { background: #45a049; }
+  </style>
+</head>
+<body>
+
+<div class="admin-container">
+
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="/admin">📊 Dashboard</a></li>
+      <li><a href="/admin/users">👤 Użytkownicy</a></li>
+      <li><a href="/admin/offers">🏠 Ogłoszenia</a></li>
+      <li class="active"><a href="/admin/dictionary">📝 Słownik</a></li>
+      <li><a href="/logout">🚪 Wyloguj</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <h1>Słownik systemowy</h1>
+
+    <% Object.keys(dictionary).forEach(key => { %>
+      <div class="dictionary-card">
+        <form method="POST" action="/admin/dictionary/<%= key %>">
+          <h3><%= key.charAt(0).toUpperCase() + key.slice(1) %></h3>
+
+          <label>
+            <input type="checkbox" name="enabled" <%= dictionary[key].enabled ? "checked" : "" %>>
+            Aktywny
+          </label>
+
+          <label>
+            <input type="checkbox" name="allowCustom" <%= dictionary[key].allowCustom ? "checked" : "" %>>
+            Pozwól na własną wartość
+          </label>
+
+          <label>Wartości (oddzielone przecinkiem):</label>
+          <textarea name="values" rows="3"><%= dictionary[key].values.join(", ") %></textarea>
+
+          <button class="btn">💾 Zapisz</button>
+        </form>
+      </div>
+    <% }) %>
+
+  </main>
+
+</div>
+
+</body>
+</html>

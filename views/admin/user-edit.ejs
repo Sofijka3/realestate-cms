@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Edytuj użytkownika</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<div class="admin-container">
+  <aside class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+          <li><a href="/admin">📊 Dashboard</a></li>
+          <li class="active"><a href="/admin/users">👤 Użytkownicy</a></li>
+          <li><a href="/admin/offers">🏠 Ogłoszenia</a></li>
+          <li class="active"><a href="/admin/settings">⚙️ Ustawienia serwisu</a></li>
+          <li><a href="/logout">🚪 Wyloguj</a></li>
+      </ul>
+  </aside>
+
+  <main class="content">
+      <h1>Edytuj użytkownika</h1>
+
+      <a href="/admin/users" class="btn-back">🔙 Powrót do użytkowników</a>
+
+      <form action="/admin/users/<%= encodeURIComponent(user.email) %>/edit" method="POST" class="form-edit">
+          <label>Login:</label>
+          <input type="text" name="username" value="<%= user.username %>" required>
+
+          <label>Email:</label>
+          <input type="email" name="email" value="<%= user.email %>" required>
+
+          <label>Telefon:</label>
+          <input type="text" name="phone" value="<%= user.phone || "" %>">
+
+          <button type="submit" class="btn btn-save">Zapisz zmiany</button>
+          <button 
+    type="button" 
+    class="btn btn-delete"
+    onclick="if(confirm('Czy na pewno chcesz usunąć tego użytkownika?')) { document.getElementById('deleteUserForm').submit(); }"
+>
+    🗑️ Usuń użytkownika
+</button>
+
+<form id="deleteUserForm" action="/admin/users/<%= encodeURIComponent(user.email) %>/delete" method="POST"></form>
+      </form>
+  </main>
+</div>
+</body>
+</html>

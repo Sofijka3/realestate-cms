@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title><%= t.auth.loginTitle %> | RealEstateCMS</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    /* --- Стиль для перемикача у кутку --- */
+    .lang-floating {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 25px; /* Більше відступів */
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      z-index: 10;
+    }
+    .lang-floating a {
+      text-decoration: none;
+      color: #555;
+      font-weight: bold;
+      font-size: 16px; /* Більший шрифт мов */
+      transition: color 0.3s;
+    }
+    .lang-floating a:hover {
+      color: #007bff;
+    }
+    .lang-floating a.active {
+      color: #0056b3;
+      border-bottom: 2px solid #0056b3;
+    }
+
+    /* --- ПОКРАЩЕННЯ ВИДИМОСТІ (Великі шрифти) --- */
+    .auth-container {
+      max-width: 450px; /* Трохи ширший контейнер */
+      width: 90%; /* Щоб на телефоні не прилипало до країв */
+      padding: 40px;
+    }
+
+    /* Заголовок */
+    .auth-container h2 {
+      font-size: 2rem; /* 32px - Великий заголовок */
+      margin-bottom: 30px;
+      color: #004080;
+    }
+
+    /* Поля вводу (Input) */
+    .auth-container input {
+      font-size: 1.1rem; /* 18px - Великий текст при вводі */
+      padding: 15px;      /* Високі зручні поля */
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    /* Кнопка "Увійти" */
+    .auth-container .btn {
+      font-size: 1.2rem; /* 19px - Велика кнопка */
+      padding: 15px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    /* Посилання (Забули пароль / Реєстрація) */
+    .auth-container p {
+      font-size: 1.1rem; /* 18px - Читабельний текст */
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    
+    .auth-container a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Помилки */
+    .error {
+      color: #dc3545;
+      background: #f8d7da;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 1rem;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="lang-floating">
+    <a href="/change-lang/pl" class="<%= lang === 'pl' ? 'active' : '' %>">PL</a>
+    <a href="/change-lang/en" class="<%= lang === 'en' ? 'active' : '' %>">EN</a>
+    <a href="/change-lang/ua" class="<%= lang === 'ua' ? 'active' : '' %>">UA</a>
+  </div>
+
+  <div class="auth-container">
+    <h2><%= t.auth.loginTitle %></h2>
+    
+    <form method="POST" action="/login">
+      <input type="text" name="username" placeholder="<%= t.auth.inputLogin %>" required>
+      <input type="password" name="password" placeholder="<%= t.auth.inputPassword %>" required>
+      
+      <button type="submit" class="btn"><%= t.auth.submitLogin %></button>
+    </form>
+
+    <p style="text-align: right; margin-top: 10px;">
+      <a href="/forgot-password" class="btn-link"><%= t.auth.forgotPass %></a>
+    </p>
+
+    <% if (typeof message !== "undefined" && message) { %>
+        <p class="error"><%= message %></p>
+    <% } %>
+
+    <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+      <%= t.auth.noAccount %> <br>
+      <a href="/register" style="font-size: 1.2rem;"><%= t.auth.registerLink %></a>
+    </p>
+  </div>
+</body>
+</html>

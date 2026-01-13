@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="<%= lang || 'pl' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>RealEstate CMS</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">🏠 RealEstateCMS</div>
+
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+  <div class="nav-wrapper" id="mobileMenu">
+    
+    <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
+      <a href="/change-lang/pl" class="<%= (typeof lang !== 'undefined' && lang === 'pl') ? 'active' : '' %>" style="font-weight:bold;">PL</a>
+      <a href="/change-lang/en" class="<%= (typeof lang !== 'undefined' && lang === 'en') ? 'active' : '' %>" style="font-weight:bold;">EN</a>
+      <a href="/change-lang/ua" class="<%= (typeof lang !== 'undefined' && lang === 'ua') ? 'active' : '' %>" style="font-weight:bold;">UA</a>
+    </div>
+
+    <nav>
+      <a href="/"><%= (typeof t !== 'undefined') ? t.nav.home : 'Home' %></a>
+      <a href="/offers"><%= (typeof t !== 'undefined') ? t.nav.offers : 'Offers' %></a>
+      <a href="/favorites" style="color: #e83e8c;">❤️ Ulubione</a>
+      <a href="/about"><%= (typeof t !== 'undefined') ? t.nav.about : 'About' %></a>
+      <a href="/contact"><%= (typeof t !== 'undefined') ? t.nav.contact : 'Contact' %></a>
+
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/dashboard" class="btn"><%= (typeof t !== 'undefined') ? t.nav.dashboard : 'Panel' %></a>
+        <a href="/logout" class="btn-outline"><%= (typeof t !== 'undefined') ? t.nav.logout : 'Logout' %></a>
+      <% } else { %>
+        <a href="/login" class="btn"><%= (typeof t !== 'undefined') ? t.nav.login : 'Login' %></a>
+        <% if (typeof t !== 'undefined' && t.nav.register) { %>
+            <a href="/register" class="btn-outline"><%= t.nav.register %></a>
+        <% } else { %>
+            <a href="/register" class="btn-outline">Register</a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+</script>
+
+<section class="hero" id="heroSection">
+  <div class="hero-overlay"></div>
+  <div class="hero-text">
+    <h1><%= content.heroTitle || "RealEstate CMS" %></h1>
+    <p><%= content.heroText || "" %></p>
+    <a href="/offers" class="btn-large">
+      <%= (typeof t !== 'undefined' && t.home && t.home.browse) ? t.home.browse : "Przeglądaj oferty" %>
+    </a>
+  </div>
+</section>
+
+<% (content.sections || []).forEach(section => { %>
+  <section class="container" style="margin-bottom: 40px;">
+    <h2><%= section.title %></h2>
+    <p><%= section.content %></p>
+    <% if (section.image) { %>
+      <img src="<%= section.image %>" alt="" style="border-radius: 10px; margin-top: 15px;">
+    <% } %>
+  </section>
+<% }) %>
+
+<% if (typeof latestOffers !== 'undefined' && latestOffers.length > 0) { %>
+  <section class="container latest-offers-section">
+    
+    <div class="offers-grid">
+      <% latestOffers.forEach(offer => { %>
+        <div class="offer-card">
+          
+          <div style="height: 220px; overflow: hidden; position: relative;">
+            <% if (offer.status === 'sold') { %>
+               <div style="position: absolute; top: 10px; left: 10px; background: #dc3545; color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; z-index: 10; font-size: 0.8rem;">
+                 <%= (typeof t !== 'undefined' && t.offers && t.offers.sold) ? t.offers.sold : "SPRZEDANE" %>
+               </div>
+            <% } %>
+            
+            <a href="#" class="fav-btn" data-id="<%= offer.id || o.id %>" style="position: absolute; top: 10px; right: 10px; z-index: 10; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));">
+                <%= (typeof favorites !== 'undefined' && favorites.includes(offer.id || o.id)) ? '❤️' : '🤍' %>
+            </a>
+
+            <img src="<%= (offer.images && offer.images.length) ? offer.images[0] : '/images/no-image.png' %>" alt="<%= offer.title %>">
+          </div>
+
+          <div class="offer-info">
+            <h3><%= offer.title %></h3>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">
+              📍 <%= offer.city %> <%= offer.district ? ', ' + offer.district : '' %>
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="price">
+                <%= offer.price.toLocaleString('pl-PL') %> <%= (typeof settings !== 'undefined' && settings.currency) ? settings.currency : 'PLN' %>
+              </span>
+              <a href="/offers/<%= offer.id %>" class="btn-small">
+                 <%= (typeof t !== 'undefined' && t.buttons && t.buttons.details) ? t.buttons.details : "Szczegóły" %>
+              </a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="/offers" class="btn-outline">
+        <%= (typeof t !== 'undefined' && t.home && t.home.viewAll) ? t.home.viewAll : "Zobacz wszystkie oferty" %>
+      </a>
+    </div>
+  </section>
+<% } %>
+
+<footer>
+  <p>© 2025 RealEstateCMS</p>
+</footer>
+
+<script>
+  const heroImages = <%- JSON.stringify(content.heroImages || []) %>;
+  
+  if (heroImages.length > 0) {
+    const heroSection = document.getElementById('heroSection');
+    let currentIndex = 0;
+    function changeHeroImage() {
+      heroSection.style.backgroundImage = `url('${heroImages[currentIndex]}')`;
+      currentIndex = (currentIndex + 1) % heroImages.length;
+    }
+    changeHeroImage();
+    if (heroImages.length > 1) setInterval(changeHeroImage, 3000); 
+  } else {
+    document.getElementById('heroSection').style.backgroundImage = "url('/images/default-hero.jpg')";
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.fav-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const id = btn.dataset.id;
+        try {
+          const response = await fetch('/favorites/toggle-ajax', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+          const data = await response.json();
+          if (data.success) {
+            if (data.isAdded) {
+              btn.innerHTML = '❤️';
+            } else {
+              btn.innerHTML = '🤍';
+              if (window.location.pathname === '/favorites') {
+                 const card = btn.closest('.offer-card');
+                 if(card) card.remove();
+                 if (document.querySelectorAll('.offer-card').length === 0) location.reload(); 
+              }
+            }
+          }
+        } catch (err) { console.error(err); }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

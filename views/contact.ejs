@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="<%= (typeof lang !== 'undefined') ? lang : 'pl' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= (typeof content !== 'undefined' && content.heroTitle) ? content.heroTitle : "Kontakt" %> | RealEstateCMS</title>
+  <link rel="stylesheet" href="/style.css">
+  
+  <style>
+    /* Стилі для сторінки Контактів */
+    .contact-page {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .contact-page h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .contact-page p {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #666;
+    }
+
+    .contact-wrapper {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap; 
+      align-items: flex-start;
+    }
+
+    .contact-form, .contact-map {
+      flex: 1 1 300px;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .contact-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .contact-form button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .contact-form button:hover {
+      background-color: #0056b3;
+    }
+
+    iframe {
+      width: 100%;
+      border: none;
+      height: 400px;
+      border-radius: 8px;
+    }
+
+    /* Стиль повідомлення про успіх */
+    .msg {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 30px;
+      border: 1px solid #c3e6cb;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .contact-wrapper {
+        flex-direction: column;
+      }
+      .contact-form, .contact-map {
+        width: 100%;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">🏠 RealEstateCMS</div>
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+  <div class="nav-wrapper" id="mobileMenu">
+    <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
+      <a href="/change-lang/pl" class="<%= (typeof lang !== 'undefined' && lang === 'pl') ? 'active' : '' %>" style="font-weight:bold;">PL</a>
+      <a href="/change-lang/en" class="<%= (typeof lang !== 'undefined' && lang === 'en') ? 'active' : '' %>" style="font-weight:bold;">EN</a>
+      <a href="/change-lang/ua" class="<%= (typeof lang !== 'undefined' && lang === 'ua') ? 'active' : '' %>" style="font-weight:bold;">UA</a>
+    </div>
+    <nav>
+      <a href="/"><%= (typeof t !== 'undefined') ? t.nav.home : 'Home' %></a>
+      <a href="/offers"><%= (typeof t !== 'undefined') ? t.nav.offers : 'Offers' %></a>
+      <a href="/favorites" style="color: #e83e8c;">❤️ Ulubione</a>
+      <a href="/about"><%= (typeof t !== 'undefined') ? t.nav.about : 'About' %></a>
+      <a href="/contact"><%= (typeof t !== 'undefined') ? t.nav.contact : 'Contact' %></a>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <a href="/dashboard" class="btn"><%= (typeof t !== 'undefined') ? t.nav.dashboard : 'Panel' %></a>
+        <a href="/logout" class="btn-outline"><%= (typeof t !== 'undefined') ? t.nav.logout : 'Logout' %></a>
+      <% } else { %>
+        <a href="/login" class="btn"><%= (typeof t !== 'undefined') ? t.nav.login : 'Login' %></a>
+        <% if (typeof t !== 'undefined' && t.nav.register) { %>
+           <a href="/register" class="btn-outline"><%= t.nav.register %></a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+</script>
+
+<main class="contact-page">
+
+  <h1><%= (typeof content !== 'undefined' && content.heroTitle) ? content.heroTitle : "Skontaktuj się z nami" %></h1>
+  <p><%= (typeof content !== 'undefined' && content.heroText) ? content.heroText : "Masz pytania? Napisz do nas lub odwiedź nasze biuro." %></p>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="msg">✅ <%= message %></div>
+  <% } %>
+
+  <div class="contact-wrapper">
+
+    <div class="contact-form">
+      <form action="/contact" method="POST">
+        
+        <label><%= (typeof ui !== 'undefined' && ui.labels && ui.labels.name) ? ui.labels.name : "Imię" %>:</label>
+        <input type="text" name="name" required placeholder="Twoje imię">
+
+        <label><%= (typeof ui !== 'undefined' && ui.labels && ui.labels.email) ? ui.labels.email : "Email" %>:</label>
+        <input type="email" name="email" required placeholder="twoj@email.com">
+
+        <label><%= (typeof ui !== 'undefined' && ui.labels && ui.labels.message) ? ui.labels.message : "Wiadomość" %>:</label>
+        <textarea name="message" required placeholder="Treść wiadomości..."></textarea>
+
+        <button type="submit"><%= (typeof ui !== 'undefined' && ui.buttons && ui.buttons.send) ? ui.buttons.send : "Wyślij wiadomość" %></button>
+      </form>
+    </div>
+
+    <div class="contact-map">
+      <h3><%= (typeof ui !== 'undefined' && ui.labels && ui.labels.location) ? ui.labels.location : "Nasza lokalizacja" %></h3>
+      
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2443.7941712270923!2d21.003224777283626!3d52.22931495772393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecc8c92692e49%3A0xc2e97ae5311f2dc2!2sPa%C5%82ac%20Kultury%20i%20Nauki!5e0!3m2!1spl!2spl!4v1709200000000!5m2!1spl!2spl" 
+        width="100%" 
+        height="400" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 RealEstateCMS</p>
+</footer>
+
+</body>
+</html>
