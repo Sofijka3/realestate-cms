@@ -463,10 +463,29 @@ app.get("/admin", isAuthenticated, isAdmin, async (req, res) => {
 
 app.get("/admin/settings", isAuthenticated, isAdmin, async (req, res) => {
     const config = await Settings.findOne({ key: "main_config" });
+    
+    // Адаптуємо нову структуру бази під старий вигляд для шаблону
+    // Шаблон чекає { enabled: true, values: ["..."] }
+    // А в базі у нас [{name: "...", enabled: true}]
+    
+    const adaptDict = (list) => ({
+        enabled: true, 
+        values: list ? list.map(item => item.name) : []
+    });
+
+    const adaptedDictionary = {
+        cities: adaptDict(config?.dictionary?.cities),
+        categories: adaptDict(config?.dictionary?.categories),
+        propertyTypes: adaptDict(config?.dictionary?.propertyTypes),
+        rooms: adaptDict(config?.dictionary?.rooms),
+        districts: adaptDict(config?.dictionary?.districts)
+    };
+
     res.render("admin/settings", { 
         settings: config?.settings || {}, 
-        dictionary: config?.dictionary || {}, 
-        user: req.session.user, message: null 
+        dictionary: adaptedDictionary, 
+        user: req.session.user, 
+        message: null 
     });
 });
 
@@ -546,7 +565,191 @@ app.post("/contact", async (req, res) => {
     // Та ж сама логіка з nodemailer...
     res.render("contact", { content: {}, message: "Wysłano!", ui: res.locals.ui, requestPath: req.path, user: req.session.user });
 });
+// --- ДОДАТКОВІ МАРШРУТИ (Профіль та Про нас) ---
 
+// Сторінка "Про нас"
+app.get("/about", async (req, res) => {
+    const page = await Page.findOne({ key: "about" });
+    const content = page?.[res.locals.lang] || { heroTitle: "O nas", heroText: "Informacje o firmie..." };
+    res.render("about", { content, ui: res.locals.ui, user: req.session.user, requestPath: req.path });
+});
+
+// Сторінка "Профіль"
+app.get("/profile", isAuthenticated, async (req, res) => {
+    const user = await User.findOne({ username: req.session.user.username });
+    res.render("profile", { user, message: "" });
+});
+
+// Оновлення профілю
+app.post("/profile/update", isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.session.user.username });
+        if (user) {
+            user.username = req.body.username;
+            user.email = req.body.email;
+            user.phone = req.body.phone;
+            await user.save();
+            
+            // Оновлюємо сесію, щоб ім'я змінилося в шапці сайту одразу
+            req.session.user = { ...req.session.user, username: user.username, email: user.email, role: user.role };
+            
+            res.render("profile", { user, message: "Zaktualizowano pomyślnie!" });
+        }
+    } catch (e) {
+        console.error("Profile update error:", e);
+        res.render("profile", { user: req.session.user, message: "Błąd: Email lub login już zajęty." });
+    }
+});
+// =================== ADMIN ROUTES (Вставити перед app.listen) ===================
+
+// --- 1. УПРАВЛІННЯ КОРИСТУВАЧАМИ ---
+app.get("/admin/users", isAuthenticated, isAdmin, async (req, res) => {
+    // Показуємо всіх, крім адмінів
+    const users = await User.find({ role: { $ne: 'admin' } });
+    res.render("admin/users", { users, search: "", page: 1, totalPages: 1 });
+});
+
+app.get("/admin/users/:email/edit", isAuthenticated, isAdmin, async (req, res) => {
+    const user = await User.findOne({ email: req.params.email });
+    if (!user || user.role === "admin") return res.redirect("/admin/users");
+    res.render("admin/user-edit", { user });
+});
+
+app.post("/admin/users/:email/edit", isAuthenticated, isAdmin, async (req, res) => {
+    const user = await User.findOne({ email: req.params.email });
+    if (user && user.role !== "admin") {
+        user.username = req.body.username;
+        user.email = req.body.email; 
+        user.phone = req.body.phone;
+        await user.save();
+    }
+    res.redirect("/admin/users");
+});
+
+app.post("/admin/users/:email/delete", isAuthenticated, isAdmin, async (req, res) => {
+    const user = await User.findOne({ email: req.params.email });
+    if (user && user.role !== "admin") {
+        await User.deleteOne({ email: req.params.email });
+        // Видаляємо також оголошення цього користувача
+        await Offer.deleteMany({ user: req.params.email });
+    }
+    res.redirect("/admin/users");
+});
+
+// --- 2. УПРАВЛІННЯ ОГОЛОШЕННЯМИ ---
+app.get("/admin/offers", isAuthenticated, isAdmin, async (req, res) => {
+    const offers = await Offer.find();
+    res.render("admin/offers", { offers, page: 1, totalPages: 1, search: "" });
+});
+
+app.get("/admin/offers/:id/edit", isAuthenticated, isAdmin, async (req, res) => {
+    const offer = await Offer.findOne({ id: req.params.id });
+    if (!offer) return res.redirect("/admin/offers");
+    
+    // Формуємо словник для старого шаблону (щоб не ламався ejs)
+    const dictionary = { 
+        cities: { values: res.locals.DICT.cities },
+        categories: { values: res.locals.DICT.categories },
+        propertyTypes: { values: res.locals.DICT.propertyTypes },
+        rooms: { values: res.locals.DICT.rooms },
+        districts: { values: res.locals.DICT.districts }
+    };
+    
+    res.render("admin/offer-edit", { offer, dictionary });
+});
+
+app.post("/admin/offers/:id/edit", isAuthenticated, isAdmin, upload.array("images", 10), async (req, res) => {
+    const offer = await Offer.findOne({ id: req.params.id });
+    if (!offer) return res.redirect("/admin/offers");
+
+    offer.title = req.body.title;
+    offer.description = req.body.description;
+    offer.price = Number(req.body.price);
+    offer.city = req.body.city;
+    offer.district = req.body.district;
+    offer.area = Number(req.body.area);
+    offer.rooms = Number(req.body.rooms);
+    offer.type = req.body.type;
+    offer.category = req.body.category;
+    if (req.body.status) offer.status = req.body.status;
+    
+    // Логіка видалення фото
+    if (req.body.removeImages) {
+        const toRemove = Array.isArray(req.body.removeImages) ? req.body.removeImages : [req.body.removeImages];
+        toRemove.forEach(img => {
+             const p = path.join(__dirname, "public", img);
+             if (fs.existsSync(p)) fs.unlinkSync(p);
+        });
+        offer.images = offer.images.filter(img => !toRemove.includes(img));
+    }
+
+    // Логіка додавання фото
+    if (req.files && req.files.length > 0) {
+        for (const f of req.files) {
+            const originalPath = path.join("public/uploads", f.filename);
+            const newFilename = "resized-" + f.filename;
+            const outputPath = path.join("public/uploads", newFilename);
+            await sharp(originalPath).resize({ width: 1200 }).jpeg({ quality: 80 }).toFile(outputPath);
+            fs.unlinkSync(originalPath);
+            offer.images.push("/uploads/" + newFilename);
+        }
+    }
+
+    await offer.save();
+    res.redirect("/admin/offers");
+});
+
+// --- 3. РЕДАГУВАННЯ СТОРІНОК (CMS) ---
+app.get("/admin/pages/:pageKey", isAuthenticated, isAdmin, async (req, res) => {
+    const { pageKey } = req.params;
+    const lang = req.query.lang || 'pl';
+    
+    const page = await Page.findOne({ key: pageKey });
+    // Якщо сторінки немає в базі - даємо пустий об'єкт, щоб не впало
+    const content = page?.[lang] || { heroTitle: "", heroText: "", sections: [], heroImages: [] };
+    
+    res.render("admin-page-editor", { pageKey, page: content, lang });
+});
+
+app.post('/admin/pages/:pageKey', isAuthenticated, isAdmin, upload.array('heroImages', 5), async (req, res) => {
+    const { pageKey } = req.params;
+    const lang = req.query.lang || 'pl';
+
+    // Знаходимо або створюємо сторінку
+    let page = await Page.findOne({ key: pageKey });
+    if (!page) page = new Page({ key: pageKey, pl: {}, en: {}, ua: {} });
+
+    // Отримуємо існуючі дані
+    const currentData = page[lang] || {};
+    let finalImages = currentData.heroImages || [];
+    if (req.body.clearHeroImages === "on") finalImages = [];
+
+    // Додаємо нові фото
+    if (req.files && req.files.length > 0) {
+        for (const f of req.files) {
+            const originalPath = path.join("public/uploads", f.filename);
+            const newFilename = "hero-" + f.filename;
+            const outputPath = path.join("public/uploads", newFilename);
+            await sharp(originalPath).resize({ width: 1920 }).jpeg({ quality: 85 }).toFile(outputPath);
+            fs.unlinkSync(originalPath);
+            finalImages.push("/uploads/" + newFilename);
+        }
+    }
+
+    // Оновлюємо об'єкт мови
+    page[lang] = {
+        heroTitle: req.body.heroTitle,
+        heroText: req.body.heroText,
+        sections: req.body.sections || [],
+        heroImages: finalImages
+    };
+
+    // Mongoose вимагає повідомити, що поле Object змінилося
+    page.markModified(lang); 
+    await page.save();
+    
+    res.redirect(`/admin/pages/${pageKey}?lang=${lang}`);
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
