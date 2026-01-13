@@ -178,7 +178,7 @@
         <label><%= t.addOffer.labels.type %></label>
         <select name="type" required>
           <option value=""><%= t.addOffer.placeholders.selectType %></option>
-          <% dict.propertyTypes.values.forEach(v => { %>
+          <% dict.propertyTypes.forEach(v => { %>
             <option value="<%= v %>"><%= v %></option>
           <% }) %>
         </select>
@@ -186,7 +186,7 @@
         <label><%= t.addOffer.labels.category %></label>
         <select name="category" required>
           <option value=""><%= t.addOffer.placeholders.selectCategory %></option>
-          <% dict.categories.values.forEach(c => { %>
+          <% dict.categories.forEach(c => { %>
             <option value="<%= c %>"><%= c %></option>
           <% }) %>
         </select>
@@ -197,7 +197,7 @@
         <label><%= t.addOffer.labels.city %></label>
         <select name="city" required>
           <option value=""><%= t.addOffer.placeholders.selectCity %></option>
-          <% dict.cities.values.forEach(c => { %>
+          <% dict.cities.forEach(c => { %>
             <option value="<%= c %>"><%= c %></option>
           <% }) %>
         </select>
@@ -205,7 +205,7 @@
         <label><%= t.addOffer.labels.district %></label>
         <select name="district" required>
           <option value=""><%= t.addOffer.placeholders.selectDistrict %></option>
-          <% dict.districts.values.forEach(d => { %>
+          <% dict.districts.forEach(d => { %>
             <option value="<%= d %>"><%= d %></option>
           <% }) %>
         </select>
@@ -216,7 +216,7 @@
         <label><%= t.addOffer.labels.rooms %></label>
         <select name="rooms" required>
           <option value=""><%= t.addOffer.placeholders.selectRooms %></option>
-          <% dict.rooms.values.forEach(r => { %>
+          <% dict.rooms.forEach(r => { %>
             <option value="<%= r %>"><%= r %></option>
           <% }) %>
         </select>
