@@ -26,38 +26,16 @@
         .btn { background: #4CAF50; color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px; transition: 0.2s; }
         .btn:hover { background: #45a049; }
         .message-box { background: #e8ffe8; border: 1px solid #5cb85c; padding: 12px 15px; border-radius: 6px; color: #2e7d32; font-weight: 600; margin-top: 10px; }
-.pages-links {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 15px;
-}
-
-.admin-link {
-  display: inline-block;
-  padding: 12px 16px;
-  background: #f8f9fa;
-  border: 1px solid #dce1e6;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #2e2e2e;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.admin-link:hover {
-  background: #e9f2ff;
-  border-color: #0d6efd;
-  color: #0d6efd;
-  transform: translateX(4px);
-}
+        
+        .pages-links { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .admin-link { display: inline-block; padding: 12px 16px; background: #f8f9fa; border: 1px solid #dce1e6; border-radius: 8px; text-decoration: none; color: #2e2e2e; font-weight: 600; transition: all 0.2s ease; }
+        .admin-link:hover { background: #e9f2ff; border-color: #0d6efd; color: #0d6efd; transform: translateX(4px); }
     </style>
 </head>
 <body>
 
 <div class="admin-container">
 
-    <!-- Sidebar -->
     <aside class="sidebar">
         <h2>Admin Panel</h2>
         <ul>
@@ -69,11 +47,9 @@
         </ul>
     </aside>
 
-    <!-- Main content -->
     <main class="content">
         <div class="flex-wrapper">
 
-            <!-- Налаштування сайту -->
             <div class="settings-wrapper">
                 <h1>Ustawienia serwisu</h1>
                 <form method="POST" class="settings-form">
@@ -96,34 +72,78 @@
                 <% } %>
 
                 <h2 style="margin-top:30px;">Zarządzanie stronami</h2>
-<div class="admin-pages-links">
-  <a href="/admin/pages/home" class="admin-link">Edytuj stronę główną</a>
-  <a href="/admin/pages/about" class="admin-link"> Edytuj stronę „O nas”</a>
-  <a href="/admin/pages/contact" class="admin-link">Edytuj stronę Kontakt</a>
-</div>
+                <div class="pages-links">
+                  <a href="/admin/pages/home" class="admin-link">Edytuj stronę główną</a>
+                  <a href="/admin/pages/about" class="admin-link"> Edytuj stronę „O nas”</a>
+                  <a href="/admin/pages/contact" class="admin-link">Edytuj stronę Kontakt</a>
+                </div>
             </div>
 
-            <!-- Словник -->
             <div class="dictionary-wrapper">
                 <h1>Słownik systemowy</h1>
 
-                <% Object.keys(dictionary).forEach(key => { %>
                 <div class="dictionary-card">
-                    <form method="POST" action="/admin/dictionary/<%= key %>">
-                        <h3><%= key.charAt(0).toUpperCase() + key.slice(1) %></h3>
-
+                    <form method="POST" action="/admin/dictionary/cities">
+                        <h3>Miasta (Cities)</h3>
                         <label>
-                          <input type="checkbox" name="enabled" <%= dictionary[key].enabled ? "checked" : "" %>>
-                          Aktywny
+                          <input type="checkbox" name="enabled" <%= dictionary.cities.enabled ? "checked" : "" %>> Aktywny
                         </label>
-
                         <label>Wartości (oddzielone przecinkiem):</label>
-                        <textarea name="values" rows="3"><%= dictionary[key].values.join(", ") %></textarea>
-
+                        <textarea name="values" rows="3"><%= dictionary.cities.values.join(", ") %></textarea>
                         <button class="btn">💾 Zapisz</button>
                     </form>
                 </div>
-                <% }) %>
+
+                <div class="dictionary-card" style="border-left: 5px solid #007bff;">
+                    <form method="POST" action="/admin/dictionary/districts">
+                        <h3>Dzielnice (Districts)</h3>
+                        <label>
+                          <input type="checkbox" name="enabled" <%= dictionary.districts.enabled ? "checked" : "" %>> Aktywny
+                        </label>
+                        <label>Wartości (oddzielone przecinkiem):</label>
+                        <textarea name="values" rows="5"><%= dictionary.districts.values.join(", ") %></textarea>
+                        <small style="color: #666; display: block; margin-top: 5px; background: #f0f0f0; padding: 5px;">
+                            💡 <b>Wskazówka:</b> Używaj formatu "Miasto - Dzielnica", np. <i>Warszawa - Mokotów</i>
+                        </small>
+                        <button class="btn">💾 Zapisz</button>
+                    </form>
+                </div>
+
+                <div class="dictionary-card">
+                    <form method="POST" action="/admin/dictionary/categories">
+                        <h3>Kategorie</h3>
+                        <label>
+                          <input type="checkbox" name="enabled" <%= dictionary.categories.enabled ? "checked" : "" %>> Aktywny
+                        </label>
+                        <label>Wartości (oddzielone przecinkiem):</label>
+                        <textarea name="values" rows="3"><%= dictionary.categories.values.join(", ") %></textarea>
+                        <button class="btn">💾 Zapisz</button>
+                    </form>
+                </div>
+
+                <div class="dictionary-card">
+                    <form method="POST" action="/admin/dictionary/propertyTypes">
+                        <h3>Typy nieruchomości</h3>
+                        <label>
+                          <input type="checkbox" name="enabled" <%= dictionary.propertyTypes.enabled ? "checked" : "" %>> Aktywny
+                        </label>
+                        <label>Wartości (oddzielone przecinkiem):</label>
+                        <textarea name="values" rows="3"><%= dictionary.propertyTypes.values.join(", ") %></textarea>
+                        <button class="btn">💾 Zapisz</button>
+                    </form>
+                </div>
+
+                 <div class="dictionary-card">
+                    <form method="POST" action="/admin/dictionary/rooms">
+                        <h3>Pokoje</h3>
+                        <label>
+                          <input type="checkbox" name="enabled" <%= dictionary.rooms.enabled ? "checked" : "" %>> Aktywny
+                        </label>
+                        <label>Wartości (oddzielone przecinkiem):</label>
+                        <textarea name="values" rows="3"><%= dictionary.rooms.values.join(", ") %></textarea>
+                        <button class="btn">💾 Zapisz</button>
+                    </form>
+                </div>
 
             </div>
 

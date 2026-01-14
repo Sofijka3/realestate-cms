@@ -9,7 +9,7 @@
     /* --- Стилі для Фільтрів --- */
     .filter-form {
       display: flex;
-      flex-wrap: wrap; /* Дозволяє перенос на новий рядок */
+      flex-wrap: wrap;
       gap: 15px;
       background: #fff;
       padding: 20px;
@@ -39,20 +39,18 @@
       font-weight: bold;
     }
 
-    /* --- МОБІЛЬНА ВЕРСІЯ ФІЛЬТРІВ --- */
     @media (max-width: 768px) {
       .filter-form {
-        flex-direction: column; /* Елементи стовпчиком */
-        align-items: stretch;   /* Розтягнути на всю ширину */
+        flex-direction: column;
+        align-items: stretch;
         gap: 10px;
       }
-
       .filter-form select, 
       .filter-form input,
       .filter-form button {
-        width: 100%; /* На всю ширину екрану */
-        height: 45px; /* Зручна висота для пальця */
-        font-size: 16px; /* Читабельний текст */
+        width: 100%;
+        height: 45px;
+        font-size: 16px;
       }
     }
   </style>
@@ -61,9 +59,7 @@
 
 <header class="navbar">
   <div class="logo">🏠 RealEstateCMS</div>
-
   <button class="hamburger" onclick="toggleMenu()">☰</button>
-
   <div class="nav-wrapper" id="mobileMenu">
     
     <div class="lang-switch" style="display:flex; gap:10px; justify-content:center; margin-bottom: 10px;">
@@ -105,18 +101,60 @@
   <h1 style="text-align: center; margin: 30px 0;"><%= t.nav.offers %></h1>
 
   <form method="GET" action="/offers" class="filter-form">
-    <select name="city"><option value=""><%= ui.labels.city %></option><% if (DICT.cities) { %><% DICT.cities.forEach(city => { %><option value="<%= city %>" <%= req.query.city === city ? "selected" : "" %>><%= city %></option><% }) %><% } %></select>
-    <select name="type"><option value=""><%= ui.labels.type %></option><% if (DICT.propertyTypes) { %><% DICT.propertyTypes.forEach(t => { %><option value="<%= t %>" <%= req.query.type === t ? "selected" : "" %>><%= t %></option><% }) %><% } %></select>
-    <select name="category"><option value=""><%= ui.labels.category %></option><% if (DICT.categories) { %><% DICT.categories.forEach(c => { %><option value="<%= c %>" <%= req.query.category === c ? "selected" : "" %>><%= c %></option><% }) %><% } %></select>
-    <select name="rooms"><option value=""><%= ui.labels.rooms %></option><% if (DICT.rooms) { %><% DICT.rooms.forEach(r => { %><option value="<%= r %>" <%= req.query.rooms == r ? "selected" : "" %>><%= r %></option><% }) %><% } %></select>
+    
+    <select name="city">
+        <option value=""><%= ui.labels.city %></option>
+        <% if (DICT.cities) { %>
+            <% DICT.cities.forEach(city => { %>
+                <option value="<%= city %>" <%= req.query.city === city ? "selected" : "" %>><%= city %></option>
+            <% }) %>
+        <% } %>
+    </select>
+
+    <select name="district">
+        <option value=""><%= ui.labels.district || 'Dzielnica' %></option>
+        <% if (DICT.districts) { %>
+            <% DICT.districts.forEach(d => { %>
+                <option value="<%= d %>" <%= req.query.district === d ? "selected" : "" %>><%= d %></option>
+            <% }) %>
+        <% } %>
+    </select>
+    <select name="type">
+        <option value=""><%= ui.labels.type %></option>
+        <% if (DICT.propertyTypes) { %>
+            <% DICT.propertyTypes.forEach(t => { %>
+                <option value="<%= t %>" <%= req.query.type === t ? "selected" : "" %>><%= t %></option>
+            <% }) %>
+        <% } %>
+    </select>
+    
+    <select name="category">
+        <option value=""><%= ui.labels.category %></option>
+        <% if (DICT.categories) { %>
+            <% DICT.categories.forEach(c => { %>
+                <option value="<%= c %>" <%= req.query.category === c ? "selected" : "" %>><%= c %></option>
+            <% }) %>
+        <% } %>
+    </select>
+    
+    <select name="rooms">
+        <option value=""><%= ui.labels.rooms %></option>
+        <% if (DICT.rooms) { %>
+            <% DICT.rooms.forEach(r => { %>
+                <option value="<%= r %>" <%= req.query.rooms == r ? "selected" : "" %>><%= r %></option>
+            <% }) %>
+        <% } %>
+    </select>
+    
     <input type="number" name="minPrice" placeholder="<%= ui.labels.minPrice %>" value="<%= req.query.minPrice || '' %>">
     <input type="number" name="maxPrice" placeholder="<%= ui.labels.maxPrice %>" value="<%= req.query.maxPrice || '' %>">
+    
     <button type="submit"><%= ui.buttons.filter %></button>
     <a href="/offers" style="font-size: 0.9rem; text-decoration: underline; color: #666;">Reset</a>
   </form>
 
   <% if (!offers || offers.length === 0) { %>
-    <p class="subtitle" style="text-align:center;"><%= ui.labels.noOffers %></p>
+    <p class="subtitle" style="text-align:center;"><%= ui.labels.noOffers || "Brak ofert spełniających kryteria." %></p>
   <% } else { %>
     <div class="offer-grid">
       <% offers.forEach(o => { %>
@@ -142,7 +180,7 @@
 
           <div class="offer-info">
             <h3><%= o.title %></h3>
-            <p style="font-size: 0.9rem; color: #666;"><%= o.city %> — <%= o.area %> m², <%= o.rooms %> pokoi</p>
+            <p style="font-size: 0.9rem; color: #666;"><%= o.city %> (<%= o.district || '-' %>) — <%= o.area %> m², <%= o.rooms %> pokoi</p>
             <p class="price"><%= o.price.toLocaleString('pl-PL') %> PLN</p>
             <a href="/offers/<%= o.id %>" class="btn-small" style="text-align: center; display: block; margin-top: 10px;"><%= ui.buttons.details %></a>
           </div>
@@ -163,9 +201,8 @@
 
     buttons.forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        e.preventDefault(); // Не перезавантажуємо сторінку
+        e.preventDefault(); 
         const id = btn.dataset.id;
-        
         try {
           const response = await fetch('/favorites/toggle-ajax', {
             method: 'POST',
@@ -173,14 +210,8 @@
             body: JSON.stringify({ id })
           });
           const data = await response.json();
-          
           if (data.success) {
-            // Міняємо іконку
-            if (data.isAdded) {
-              btn.innerHTML = '❤️';
-            } else {
-              btn.innerHTML = '🤍';
-            }
+            btn.innerHTML = data.isAdded ? '❤️' : '🤍';
           }
         } catch (err) { console.error('Помилка:', err); }
       });
