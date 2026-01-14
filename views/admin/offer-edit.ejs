@@ -2,79 +2,24 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Edytuj ogłoszenie</title>
+  <title>Edytuj ogłoszenie (Admin)</title>
   <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+      .form-edit { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 800px; }
+      .form-edit label { display: block; margin-top: 15px; font-weight: bold; color: #333; }
+      .form-edit input, .form-edit textarea, .form-edit select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+      .gallery { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+      .photo-item { position: relative; width: 100px; height: 100px; border: 1px solid #ddd; }
+      .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+      .photo-actions { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; font-size: 0.8rem; text-align: center; padding: 2px; }
+      .btn-save { margin-top: 20px; background: #28a745; color: white; padding: 12px 20px; border: none; cursor: pointer; font-size: 1rem; }
+      .btn-save:hover { background: #218838; }
+      .preview-img { width: 80px; height: 80px; object-fit: cover; border: 1px dashed #ccc; margin-right: 5px; }
+  </style>
 </head>
 <body>
 
-<!-- SortableJS -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-
-<!-- 📦 GALERIA + KOLEJNOŚĆ + GŁÓWNE FOTO -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const gallery = document.getElementById("photoGallery");
-  const orderInput = document.getElementById("imageOrder");
-
-  if (!gallery) return;
-
-  new Sortable(gallery, {
-    animation: 150,
-    onSort: () => {
-      const order = [...gallery.querySelectorAll(".photo-item")]
-        .map(el => el.dataset.path);
-      orderInput.value = JSON.stringify(order);
-    }
-  });
-
-  // initial order
-  const initialOrder = [...gallery.querySelectorAll(".photo-item")]
-    .map(el => el.dataset.path);
-  orderInput.value = JSON.stringify(initialOrder);
-
-  // ⭐ podświetlenie głównego zdjęcia
-  const coverIndex = <%= offer.coverIndex || 0 %>;
-  const items = gallery.querySelectorAll(".photo-item");
-  if (items[coverIndex]) {
-    items[coverIndex].classList.add("main");
-  }
-});
-</script>
-
-<!-- 📦 WALIDACJA PLIKÓW -->
-<script>
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const MAX_FILES = 10;
-
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.querySelector('input[name="images"]');
-  if (!input) return;
-
-  input.addEventListener("change", () => {
-    const files = [...input.files];
-
-    if (files.length > MAX_FILES) {
-      alert("Maksymalnie 10 zdjęć");
-      input.value = "";
-      return;
-    }
-
-    for (const file of files) {
-      if (!file.type.startsWith("image/")) {
-        alert("Dozwolone są tylko zdjęcia");
-        input.value = "";
-        return;
-      }
-
-      if (file.size > MAX_FILE_SIZE) {
-        alert(`Plik "${file.name}" jest za duży (max 5MB)`);
-        input.value = "";
-        return;
-      }
-    }
-  });
-});
-</script>
 
 <div class="admin-container">
   <aside class="sidebar">
@@ -103,22 +48,90 @@ document.addEventListener("DOMContentLoaded", () => {
       <input type="text" name="title" value="<%= offer.title %>" required>
 
       <label>Opis</label>
-      <textarea name="description" required><%= offer.description %></textarea>
+      <textarea name="description" rows="5" required><%= offer.description %></textarea>
 
-      <label>Cena</label>
-      <input type="number" name="price" value="<%= offer.price %>" required>
+      <div style="display: flex; gap: 20px;">
+          <div style="flex:1;">
+              <label>Cena (PLN)</label>
+              <input type="number" name="price" value="<%= offer.price %>" required>
+          </div>
+          <div style="flex:1;">
+              <label>Status</label>
+              <select name="status">
+                  <option value="active" <%= offer.status === 'active' ? 'selected' : '' %>>Aktywne</option>
+                  <option value="sold" <%= offer.status === 'sold' ? 'selected' : '' %>>Sprzedane</option>
+                  <option value="hidden" <%= offer.status === 'hidden' ? 'selected' : '' %>>Ukryte</option>
+              </select>
+          </div>
+      </div>
 
-      <label>Miasto</label>
-      <input type="text" name="city" value="<%= offer.city || '' %>">
+      <div style="display: flex; gap: 20px;">
+          <div style="flex:1;">
+             <label>Miasto</label>
+             <select name="city">
+                 <option value=""><%= offer.city %></option>
+                 <% if (dictionary && dictionary.cities && dictionary.cities.values) { %>
+                    <% dictionary.cities.values.forEach(c => { %>
+                        <option value="<%= c %>" <%= offer.city === c ? 'selected' : '' %>><%= c %></option>
+                    <% }) %>
+                 <% } %>
+             </select>
+          </div>
+          <div style="flex:1;">
+             <label>Dzielnica</label>
+             <select name="district">
+                 <option value=""><%= offer.district || 'Brak' %></option>
+                 <% if (dictionary && dictionary.districts && dictionary.districts.values) { %>
+                    <% dictionary.districts.values.forEach(d => { %>
+                        <option value="<%= d %>" <%= offer.district === d ? 'selected' : '' %>><%= d %></option>
+                    <% }) %>
+                 <% } %>
+             </select>
+          </div>
+      </div>
 
-      <label>Pokoje</label>
-      <input type="number" name="rooms" value="<%= offer.rooms || '' %>">
+      <div style="display: flex; gap: 20px;">
+          <div style="flex:1;">
+              <label>Pokoje</label>
+              <select name="rooms">
+                 <option value=""><%= offer.rooms %></option>
+                 <% if (dictionary && dictionary.rooms && dictionary.rooms.values) { %>
+                    <% dictionary.rooms.values.forEach(r => { %>
+                        <option value="<%= r %>" <%= offer.rooms == r ? 'selected' : '' %>><%= r %></option>
+                    <% }) %>
+                 <% } %>
+             </select>
+          </div>
+          <div style="flex:1;">
+              <label>Powierzchnia (m²)</label>
+              <input type="number" name="area" value="<%= offer.area || '' %>">
+          </div>
+      </div>
 
-      <label>Powierzchnia</label>
-      <input type="number" name="area" value="<%= offer.area || '' %>">
-
-      <label>Typ</label>
-      <input type="text" name="type" value="<%= offer.type || '' %>">
+      <div style="display: flex; gap: 20px;">
+        <div style="flex:1;">
+            <label>Typ nieruchomości</label>
+            <select name="type">
+                 <option value=""><%= offer.type %></option>
+                 <% if (dictionary && dictionary.propertyTypes && dictionary.propertyTypes.values) { %>
+                    <% dictionary.propertyTypes.values.forEach(t => { %>
+                        <option value="<%= t %>" <%= offer.type === t ? 'selected' : '' %>><%= t %></option>
+                    <% }) %>
+                 <% } %>
+             </select>
+        </div>
+        <div style="flex:1;">
+            <label>Kategoria</label>
+            <select name="category">
+                 <option value=""><%= offer.category %></option>
+                 <% if (dictionary && dictionary.categories && dictionary.categories.values) { %>
+                    <% dictionary.categories.values.forEach(c => { %>
+                        <option value="<%= c %>" <%= offer.category === c ? 'selected' : '' %>><%= c %></option>
+                    <% }) %>
+                 <% } %>
+             </select>
+        </div>
+      </div>
 
       <h3>Zdjęcia</h3>
       <label>Zdjęcia (przeciągnij aby zmienić kolejność):</label>
@@ -128,59 +141,70 @@ document.addEventListener("DOMContentLoaded", () => {
           <% offer.images.forEach(img => { %>
             <div class="photo-item" data-path="<%= img %>">
               <img src="<%= img %>" alt="photo">
-
               <label class="photo-actions">
-                <input type="checkbox" name="removeImages" value="<%= img %>">
-                Usuń
+                <input type="checkbox" name="removeImages" value="<%= img %>"> Usuń
               </label>
             </div>
           <% }) %>
         <% } else { %>
-          <p>Brak zdjęć</p>
+          <p style="color:#666;">Brak zdjęć</p>
         <% } %>
       </div>
 
       <input type="hidden" name="imageOrder" id="imageOrder">
 
-      <label>Dodaj nowe zdjęcia:</label>
+      <label style="margin-top:20px;">Dodaj nowe zdjęcia:</label>
       <input type="file" name="images" multiple accept="image/*">
       <div id="newPhotosPreview" class="gallery"></div>
 
-      <button type="submit" class="btn btn-save">💾 Zapisz</button>
+      <button type="submit" class="btn btn-save">💾 Zapisz zmiany</button>
     </form>
   </main>
 </div>
 
-<!-- 📦 PREVIEW NOWYCH ZDJĘĆ -->
 <script>
-const fileInput = document.querySelector('input[name="images"]');
-const preview = document.getElementById("newPhotosPreview");
+document.addEventListener("DOMContentLoaded", () => {
+  // Sortable Gallery
+  const gallery = document.getElementById("photoGallery");
+  const orderInput = document.getElementById("imageOrder");
 
-if (fileInput && preview) {
-  fileInput.addEventListener("change", () => {
-    preview.innerHTML = "";
-    [...fileInput.files].forEach(file => {
-      if (!file.type.startsWith("image/")) return;
-      const img = document.createElement("img");
-      img.src = URL.createObjectURL(file);
-      img.className = "preview-img";
-      preview.appendChild(img);
+  if (gallery) {
+      new Sortable(gallery, {
+        animation: 150,
+        onSort: () => {
+          const order = [...gallery.querySelectorAll(".photo-item")].map(el => el.dataset.path);
+          orderInput.value = JSON.stringify(order);
+        }
+      });
+  }
+
+  // Preview new photos
+  const fileInput = document.querySelector('input[name="images"]');
+  const preview = document.getElementById("newPhotosPreview");
+
+  if (fileInput && preview) {
+    fileInput.addEventListener("change", () => {
+      preview.innerHTML = "";
+      [...fileInput.files].forEach(file => {
+        if (!file.type.startsWith("image/")) return;
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.className = "preview-img";
+        preview.appendChild(img);
+      });
     });
-  });
-}
-</script>
-
-<!-- 📦 BLOCK DOUBLE SUBMIT -->
-<script>
-const form = document.querySelector(".form-edit");
-const btn = form?.querySelector("button[type='submit']");
-
-if (form && btn) {
-  form.addEventListener("submit", () => {
-    btn.disabled = true;
-    btn.textContent = "Zapisywanie...";
-  });
-}
+  }
+  
+  // Double submit protection
+  const form = document.querySelector(".form-edit");
+  const btn = form?.querySelector("button[type='submit']");
+  if (form && btn) {
+    form.addEventListener("submit", () => {
+      btn.disabled = true;
+      btn.textContent = "Zapisywanie...";
+    });
+  }
+});
 </script>
 
 </body>
