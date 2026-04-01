@@ -17,18 +17,18 @@ import { translations } from './translations.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- 1. ПІДКЛЮЧЕННЯ ДО MONGODB ATLAS ---
+// --- 1. MONGODB ATLAS ---
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Рядок підключення (вже налаштований на вашу базу 'test')
-const uri = "mongodb+srv://sofiazhovnik11:sofia123@clustertodo.edvhc5c.mongodb.net/test?appName=ClusterToDo";
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+const uri = "mongodb+srv://";
 
 mongoose.connect(uri)
   .then(() => console.log("✅ Підключено до MongoDB Atlas!"))
   .catch(err => console.error("❌ Помилка підключення до бази:", err));
 
-// --- 2. СХЕМИ ДАНИХ (Mongoose Schemas) ---
+// --- 2.(Mongoose Schemas) ---
 
 // Користувачі
 const UserSchema = new mongoose.Schema({
@@ -102,7 +102,7 @@ async function addLog(action, user) {
     }
 }
 
-// --- 3. НАЛАШТУВАННЯ APP ---
+// --- 3. APP ---
 
 // Пошта
 const transporter = nodemailer.createTransport({
