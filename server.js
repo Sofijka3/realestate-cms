@@ -108,8 +108,8 @@ async function addLog(action, user) {
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "sofiazhovnik11@gmail.com",
-        pass: "mfgt btgt oroz bxfz"
+        user: "",
+        pass: ""
     }
 });
 
@@ -144,7 +144,7 @@ app.use(cookieParser());
 
 // Сесії через MongoDB (щоб не злітали при перезапуску!)
 app.use(session({
-    secret: "supersecretkey",
+    secret: "",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: uri }), // Зберігаємо сесії в Atlas
